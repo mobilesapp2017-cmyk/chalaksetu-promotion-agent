@@ -47,7 +47,8 @@ jobs:
             git commit -m "Create AI daily promotion package"
             git push
           fi
-            - name: Send complete promotion to Telegram
+
+      - name: Send complete promotion to Telegram
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
@@ -73,11 +74,10 @@ jobs:
           # Make Telegram message more readable
           text = text.replace(
               "# ChalakSetu AI Daily Promotion Package",
-              "🚛 CHALAKSETU DAILY PROMOTION"
+              "CHALAKSETU DAILY PROMOTION"
           )
 
-          # Telegram maximum message size is 4096 characters.
-          # Split long promotions automatically.
+          # Telegram maximum message size is 4096 characters
           chunks = []
 
           while len(text) > 4000:
@@ -96,7 +96,7 @@ jobs:
 
           for i, chunk in enumerate(chunks, start=1):
               if len(chunks) > 1:
-                  chunk = f"🚛 CHALAKSETU PROMOTION\n📦 Part {i}/{len(chunks)}\n\n{chunk}"
+                  chunk = f"CHALAKSETU PROMOTION\nPart {i}/{len(chunks)}\n\n{chunk}"
 
               response = requests.post(
                   f"https://api.telegram.org/bot{token}/sendMessage",
