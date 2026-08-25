@@ -3,7 +3,7 @@ name: ChalakSetu Hourly Promotion Agent
 on:
   schedule:
     # Run once every hour
-    - cron: "17 * * * *"
+    - cron: "5 * * * *"
 
   # Allows manual testing from GitHub Actions
   workflow_dispatch:
