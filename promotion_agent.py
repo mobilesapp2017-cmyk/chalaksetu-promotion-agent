@@ -612,7 +612,7 @@ print(f"Category: {CATEGORY_NAME}")
 print(f"Target: {TARGET_NAME}")
 
 response = client.models.generate_content(
-    model="gemini-2.5-flash",
+    model="gemini-3.6-flash",
     contents=PROMPT
 )
 
