@@ -2,9 +2,7 @@ name: ChalakSetu Telegram Promotion Agent
 
 on:
   schedule:
-    # Every 5 minutes, deliberately offset from common busy times
-    - cron: "2-59/5 * * * *"
-
+    - cron: "2,7,12,17,22,27,32,37,42,47,52,57 * * * *"
   workflow_dispatch:
 
 permissions:
