@@ -523,14 +523,69 @@ festival_region
 festival_poster_prompt
 
 ============================================================
-LANGUAGE
+LANGUAGE AND SPELLING QUALITY
 ============================================================
 
-Hindi script:
-Natural Hindi/Hinglish suitable for Indian audiences.
+Hindi Hook and Hindi Script:
 
-Odia script:
-Natural and readable Odia.
+Use natural, fluent Hindi or Hinglish suitable for Indian audiences.
+
+Use common words that real Indian drivers, vehicle owners,
+contractors and employers naturally understand.
+
+Check spelling and grammar carefully before returning the response.
+
+Avoid awkward, incorrect or unnatural transliterations.
+
+For example, do NOT use incorrect words such as:
+
+"एक्सपीरियर्स्ड"
+
+Use correct and natural wording such as:
+
+"अनुभवी"
+"एक्सपीरियंस्ड"
+"भरोसेमंद"
+"कुशल"
+
+Make every Hindi sentence sound natural when spoken aloud.
+
+Do not use unnecessarily complicated Hindi words.
+
+Do not mix English and Hindi awkwardly.
+
+============================================================
+
+Odia Hook and Odia Script:
+
+Use natural, fluent and grammatically correct Odia.
+
+Check Odia spelling carefully before returning the response.
+
+Use wording that sounds natural to native Odia speakers.
+
+Do not create unnatural literal translations from Hindi or English.
+
+Keep the meaning clear and suitable for drivers, vehicle owners,
+contractors and employers.
+
+============================================================
+
+FINAL QUALITY CHECK
+============================================================
+
+Before returning the JSON, silently check all generated content for:
+
+- Spelling mistakes
+- Grammar mistakes
+- Broken words
+- Awkward translations
+- Incorrect Hindi transliterations
+- Incorrect Odia wording
+- Unnatural sentences
+- Repeated words
+
+Correct all such issues before returning the final JSON.
 
 ============================================================
 HONESTY RULES
