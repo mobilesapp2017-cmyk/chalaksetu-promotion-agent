@@ -14,34 +14,35 @@ JCB Backhoe Loader, Backhoe Loader
 
 ## Topic
 
-Finding skilled JCB operators quickly to avoid project delays
+Finding experienced JCB Backhoe Loader operators fast to prevent site delays
 
 ## Marketing Angle
 
-Eliminate costly construction downtime by connecting directly with experienced JCB operators nearby using ChalakSetu.
+Don't let expensive JCB machinery sit idle due to operator shortages—find ready-to-work operators instantly on ChalakSetu.
 
 ## Hook
 
-JCB khadi hai par operator nahi mil raha?
+JCB machine khadi hai, par operator nahi mil raha?
 
 ## Hindi Script
 
-JCB khadi hai aur operator nahi mil raha? Ab kaam nahi rukega! ChalakSetu app par jao, experienced JCB operators dhundho aur direct baat karo. Visit karein chalaksetu.in!
+Kya aapki JCB machine bina operator ke khadi hai? Kaam mat rukne do! ChalakSetu par experienced JCB operators dhoondo minute-on mein. Aaj hi visit karein chalaksetu.in!
 
 ## Odia Script
 
-JCB ଅଛି କିନ୍ତୁ ଅପରେଟର ମିଳୁନାହାନ୍ତି? ଏବେ ସାଇଟରେ କାମ ଅଟକିବ ନାହିଁ! ChalakSetu ଆପ୍ ବ୍ୟବହାର କରନ୍ତୁ, ଅଭିଜ୍ଞ JCB ଅପରେଟର ଖୋଜନ୍ତୁ ଏବଂ ସିଧାସଳଖ କଥା ହୁଅନ୍ତୁ। ଆଜି ਹੀ visit କରନ୍ତୁ chalaksetu.in!
+ଆପଣଙ୍କ JCB ପାଇଁ ଅଭିଜ୍ଞ ଅପରେଟର୍ ମିଳୁନାହାନ୍ତି କି? କାମ ବନ୍ଦ ରଖନ୍ତୁ ନାହିଁ! ଆଜି ହିଁ ChalakSetu ରେ ନିଜ ପସନ୍ଦର JCB Operator ଖୋଜନ୍ତୁ। chalaksetu.in କୁ ଭିଜିଟ୍ କରନ୍ତୁ।
 
 ## Gemini Video Prompt
 
-A high-quality 9-second cinematic video filmed on a sunny Indian construction site. Begins with an idle yellow JCB Backhoe Loader parked near red earth, while a middle-aged Indian contractor wearing a yellow helmet checks his wristwatch anxiously. Smooth whip-pan shot to a smartphone screen displaying the ChalakSetu platform with profiles of local JCB operators. Ends with a cinematic dynamic tracking shot of the backhoe loader effortlessly digging earth, operated by a confident 30-year-old Indian operator wearing a safety vest. Warm sunlight, realistic dust particles, shot on 35mm lens, upbeat energetic Indian instrumental background music with modern percussion.
+Cinematic 9-second ultra-realistic video set at an authentic Indian construction site under bright daylight. Scene begins with a 40-year-old Indian contractor wearing a yellow hard hat looking concerned next to an idle yellow JCB Backhoe Loader. Cinematic handheld camera movement pans down to his smartphone screen displaying driver profiles on ChalakSetu. Quick dynamic cut to a confident 30-year-old Indian operator inside the JCB cabin smoothly operating the backhoe bucket moving soil. Photorealistic, 4k resolution, natural skin tones, golden dust particles in the air, energetic Indian background instrumental music included.
 
 ## Instagram Caption
 
-JCB standing idle because you can't find a skilled operator? 🚜 Stop site delays today! Connect directly with experienced backhoe operators across India on ChalakSetu.
+Idle JCB machines mean daily losses! 🚜 Don't let project deadlines slip away. Connect directly with experienced JCB Backhoe Loader operators across India on ChalakSetu.
 
-🌐 Find operators now at chalaksetu.in
+📲 Profile banao aur operators se direct connect karo!
+🌐 Visit: chalaksetu.in
 
 ## Hashtags
 
-#ChalakSetu #JCBOperator #BackhoeLoader #HeavyEquipmentIndia #ContractorLife #JCBJobs #HireOperators #IndianConstruction #ChalakSetuApp
+#JCB #JCBOperator #ChalakSetu #BackhoeLoader #ConstructionIndia #ContractorLife #HeavyEquipment #OperatorJobs #HireDrivers
