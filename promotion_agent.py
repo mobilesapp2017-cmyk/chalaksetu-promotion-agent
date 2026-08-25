@@ -1,6 +1,8 @@
 import os
 import json
+import re
 from datetime import datetime
+
 from google import genai
 
 
@@ -11,14 +13,21 @@ from google import genai
 API_KEY = os.environ.get("GEMINI_API_KEY")
 
 if not API_KEY:
-    raise ValueError(
-        "GEMINI_API_KEY is missing. Add it in GitHub Secrets."
-    )
+    raise ValueError("GEMINI_API_KEY secret is missing.")
 
 client = genai.Client(api_key=API_KEY)
 
 TODAY = datetime.now().strftime("%Y-%m-%d")
-OUTPUT_DIR = f"promotions/{TODAY}"
+NOW = datetime.now()
+
+# GitHub Actions normally runs in UTC.
+CURRENT_HOUR = NOW.hour
+
+OUTPUT_DIR = os.path.join(
+    "promotions",
+    TODAY,
+    f"{CURRENT_HOUR:02d}00"
+)
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
@@ -28,42 +37,75 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 # ============================================================
 
 WEBSITE_INFO = """
-ChalakSetu is an Indian online platform connecting:
+ChalakSetu is an Indian online platform.
 
-1. Drivers looking for jobs
-2. Vehicle owners looking for drivers
-3. Employers looking for drivers
-4. Heavy equipment operators looking for work
-5. Contractors looking for equipment operators
+Website:
+chalaksetu.in
 
-Website: chalaksetu.in
+ChalakSetu helps connect:
 
-Users can create profiles, search opportunities, find drivers,
-find operators, and connect with relevant people.
+1. Drivers looking for driving jobs.
+2. Heavy-equipment operators looking for work.
+3. Vehicle owners looking for drivers.
+4. Employers looking for drivers and equipment operators.
 
-The platform is focused on India.
+The platform can be relevant for:
+
+Cars
+Taxis
+Cabs
+Autos
+Buses
+Trucks
+Lorries
+Mini trucks
+Pickup vehicles
+Delivery vehicles
+Tractors
+JCB machines
+Backhoe loaders
+Excavators
+Cranes
+Loaders
+Dumpers
+Tippers
+Forklifts
+Road construction machinery
+Agricultural machinery
+Mining machinery
+Tankers
+School vehicles
+Ambulances
+Fire service vehicles
+Tow trucks
+Municipal vehicles
+Electric vehicles
+
+Do not make false claims.
+
+Do not say that every user is government verified unless that is
+actually confirmed.
+
+Do not promise guaranteed jobs.
+
+Do not invent website features that do not exist.
+
+Naturally mention ChalakSetu and chalaksetu.in.
 """
 
 
 # ============================================================
-# ALL MAJOR INDIAN VEHICLE & EQUIPMENT CATEGORIES
+# VEHICLE / EQUIPMENT CATEGORIES
 # ============================================================
 
 VEHICLE_CATEGORIES = [
 
-    # --------------------------------------------------------
-    # PERSONAL / PASSENGER VEHICLES
-    # --------------------------------------------------------
-
     {
         "category": "Car Drivers",
         "vehicles": [
-            "Hatchback",
-            "Sedan",
-            "SUV",
-            "MUV",
-            "Luxury Car",
-            "Private Car"
+            "Car",
+            "Private Car",
+            "Personal Driver"
         ]
     },
 
@@ -72,10 +114,7 @@ VEHICLE_CATEGORIES = [
         "vehicles": [
             "Taxi",
             "Cab",
-            "App Taxi",
-            "Airport Taxi",
-            "Tourist Taxi",
-            "Intercity Cab"
+            "Commercial Car"
         ]
     },
 
@@ -83,138 +122,55 @@ VEHICLE_CATEGORIES = [
         "category": "Auto Rickshaw Drivers",
         "vehicles": [
             "Auto Rickshaw",
-            "Electric Auto",
-            "CNG Auto",
-            "Passenger Auto"
-        ]
-    },
-
-    {
-        "category": "E-Rickshaw Drivers",
-        "vehicles": [
-            "E-Rickshaw",
-            "Electric Rickshaw",
-            "Battery Rickshaw"
+            "E-Rickshaw"
         ]
     },
 
     {
         "category": "Bus Drivers",
         "vehicles": [
-            "School Bus",
-            "College Bus",
             "Private Bus",
+            "School Bus",
             "Tourist Bus",
-            "Staff Bus",
-            "City Bus",
-            "Government Bus",
-            "Luxury Bus",
-            "Sleeper Bus",
-            "Mini Bus"
+            "Staff Bus"
         ]
     },
-
-
-    # --------------------------------------------------------
-    # GOODS / COMMERCIAL VEHICLES
-    # --------------------------------------------------------
 
     {
         "category": "Truck Drivers",
         "vehicles": [
-            "Light Truck",
-            "Medium Truck",
-            "Heavy Truck",
-            "Container Truck",
-            "Trailer Truck",
-            "Tanker Truck",
-            "Tipper Truck",
-            "Dumper Truck"
+            "Truck",
+            "Lorry",
+            "Heavy Goods Vehicle"
         ]
     },
 
     {
-        "category": "Mini Truck Drivers",
+        "category": "Mini Truck and Pickup Drivers",
         "vehicles": [
-            "Tata Ace",
-            "Bolero Pickup",
-            "Ashok Leyland Dost",
-            "Mahindra Jeeto",
+            "Pickup",
             "Mini Truck",
-            "Pickup Vehicle"
+            "Bolero Pickup",
+            "Tata Ace"
         ]
     },
 
     {
-        "category": "Goods Carrier Drivers",
+        "category": "Delivery Vehicle Drivers",
         "vehicles": [
+            "Delivery Van",
             "Goods Carrier",
-            "Delivery Vehicle",
-            "Cargo Van",
-            "Parcel Vehicle",
-            "Commercial Pickup"
+            "Commercial Delivery Vehicle"
         ]
     },
-
-    {
-        "category": "Tempo Drivers",
-        "vehicles": [
-            "Tempo",
-            "Cargo Tempo",
-            "Passenger Tempo",
-            "Delivery Tempo"
-        ]
-    },
-
-    {
-        "category": "Container Drivers",
-        "vehicles": [
-            "Shipping Container Truck",
-            "Container Trailer",
-            "Cargo Container Vehicle"
-        ]
-    },
-
-    {
-        "category": "Tanker Drivers",
-        "vehicles": [
-            "Water Tanker",
-            "Milk Tanker",
-            "Fuel Tanker",
-            "Oil Tanker",
-            "Chemical Tanker"
-        ]
-    },
-
-
-    # --------------------------------------------------------
-    # AGRICULTURE VEHICLES
-    # --------------------------------------------------------
 
     {
         "category": "Tractor Drivers",
         "vehicles": [
-            "Farm Tractor",
             "Agricultural Tractor",
-            "Tractor Trolley"
+            "Farm Tractor"
         ]
     },
-
-    {
-        "category": "Agricultural Machine Operators",
-        "vehicles": [
-            "Combine Harvester",
-            "Paddy Harvester",
-            "Thresher",
-            "Rotavator",
-            "Power Tiller"
-        ]
-    },
-
-
-    # --------------------------------------------------------
-    # CONSTRUCTION / HEAVY EQUIPMENT
-    # --------------------------------------------------------
 
     {
         "category": "JCB Operators",
@@ -227,7 +183,7 @@ VEHICLE_CATEGORIES = [
     {
         "category": "Excavator Operators",
         "vehicles": [
-            "Excavator",
+            "Hydraulic Excavator",
             "Crawler Excavator",
             "Mini Excavator"
         ]
@@ -237,9 +193,8 @@ VEHICLE_CATEGORIES = [
         "category": "Crane Operators",
         "vehicles": [
             "Mobile Crane",
-            "Hydraulic Crane",
-            "Tower Crane",
-            "Crawler Crane"
+            "Crawler Crane",
+            "Hydraulic Crane"
         ]
     },
 
@@ -247,16 +202,24 @@ VEHICLE_CATEGORIES = [
         "category": "Loader Operators",
         "vehicles": [
             "Wheel Loader",
-            "Front Loader",
-            "Skid Steer Loader"
+            "Front Loader"
         ]
     },
 
     {
-        "category": "Bulldozer Operators",
+        "category": "Dumper and Tipper Drivers",
         "vehicles": [
-            "Bulldozer",
-            "Crawler Dozer"
+            "Tipper Truck",
+            "Dumper",
+            "Mining Dumper"
+        ]
+    },
+
+    {
+        "category": "Forklift Operators",
+        "vehicles": [
+            "Forklift",
+            "Warehouse Forklift"
         ]
     },
 
@@ -265,18 +228,8 @@ VEHICLE_CATEGORIES = [
         "vehicles": [
             "Road Roller",
             "Motor Grader",
-            "Paver Machine",
-            "Asphalt Paver"
-        ]
-    },
-
-    {
-        "category": "Concrete Machine Operators",
-        "vehicles": [
-            "Transit Mixer",
-            "Concrete Mixer",
-            "Concrete Pump",
-            "Boom Pump"
+            "Paver",
+            "Asphalt Machine"
         ]
     },
 
@@ -284,63 +237,41 @@ VEHICLE_CATEGORIES = [
         "category": "Mining Equipment Operators",
         "vehicles": [
             "Mining Excavator",
-            "Dumper",
-            "Mining Truck",
-            "Rock Breaker"
+            "Mining Dumper",
+            "Drilling Machine"
         ]
     },
 
     {
-        "category": "Forklift Operators",
+        "category": "Agricultural Equipment Operators",
         "vehicles": [
-            "Forklift",
-            "Warehouse Forklift",
-            "Reach Truck"
+            "Harvester",
+            "Combine Harvester",
+            "Power Tiller"
         ]
     },
 
     {
-        "category": "Telehandler Operators",
+        "category": "Water Tanker Drivers",
         "vehicles": [
-            "Telehandler",
-            "Material Handler"
-        ]
-    },
-
-
-    # --------------------------------------------------------
-    # DELIVERY / TWO WHEELER
-    # --------------------------------------------------------
-
-    {
-        "category": "Delivery Riders",
-        "vehicles": [
-            "Motorcycle",
-            "Scooter",
-            "Electric Scooter",
-            "Delivery Bike"
+            "Water Tanker",
+            "Water Supply Vehicle"
         ]
     },
 
     {
-        "category": "Courier Drivers",
+        "category": "Fuel Tanker Drivers",
         "vehicles": [
-            "Courier Van",
-            "Delivery Van",
-            "Parcel Vehicle"
+            "Fuel Tanker",
+            "Oil Tanker"
         ]
     },
-
-
-    # --------------------------------------------------------
-    # SPECIAL PURPOSE VEHICLES
-    # --------------------------------------------------------
 
     {
         "category": "Ambulance Drivers",
         "vehicles": [
             "Ambulance",
-            "Patient Transport Vehicle"
+            "Emergency Medical Vehicle"
         ]
     },
 
@@ -353,15 +284,6 @@ VEHICLE_CATEGORIES = [
     },
 
     {
-        "category": "Garbage Vehicle Drivers",
-        "vehicles": [
-            "Garbage Truck",
-            "Waste Collection Vehicle",
-            "Municipal Vehicle"
-        ]
-    },
-
-    {
         "category": "Fire Service Vehicle Drivers",
         "vehicles": [
             "Fire Truck",
@@ -370,25 +292,21 @@ VEHICLE_CATEGORIES = [
     },
 
     {
-        "category": "Water Vehicle Drivers",
+        "category": "Garbage and Municipal Vehicle Drivers",
         "vehicles": [
-            "Water Tanker",
-            "Water Supply Vehicle"
+            "Garbage Truck",
+            "Waste Collection Vehicle",
+            "Municipal Vehicle"
         ]
     },
 
     {
-        "category": "Tow Vehicle Drivers",
+        "category": "Tow Truck Drivers",
         "vehicles": [
             "Tow Truck",
             "Recovery Vehicle"
         ]
     },
-
-
-    # --------------------------------------------------------
-    # EMERGING / ELECTRIC VEHICLES
-    # --------------------------------------------------------
 
     {
         "category": "Electric Vehicle Drivers",
@@ -404,63 +322,64 @@ VEHICLE_CATEGORIES = [
 
 
 # ============================================================
-# SELECT TODAY'S CATEGORY
-# ============================================================
-
-day_number = datetime.now().timetuple().tm_yday
-
-category_index = day_number % len(VEHICLE_CATEGORIES)
-
-selected_category = VEHICLE_CATEGORIES[category_index]
-
-category_name = selected_category["category"]
-
-vehicle_list = ", ".join(selected_category["vehicles"])
-
-
-# ============================================================
-# PROMOTION TARGETS
+# TARGET AUDIENCES
 # ============================================================
 
 TARGETS = [
 
     {
         "name": "Drivers looking for jobs",
-        "focus": """
-        Create promotion content aimed at drivers and operators who are
-        looking for jobs and work opportunities.
-        """
+        "focus": (
+            "Promote opportunities for skilled drivers and operators "
+            "who are searching for work."
+        )
     },
 
     {
         "name": "Vehicle owners looking for drivers",
-        "focus": """
-        Create promotion content aimed at vehicle owners who need to find
-        reliable and suitable drivers for their vehicles.
-        """
+        "focus": (
+            "Promote ChalakSetu as a place where vehicle owners can "
+            "search for suitable driver profiles."
+        )
     },
 
     {
         "name": "Employers and contractors",
-        "focus": """
-        Create promotion content aimed at employers, companies and contractors
-        looking to hire drivers or skilled equipment operators.
-        """
+        "focus": (
+            "Promote finding suitable drivers and equipment operators "
+            "for business and work requirements."
+        )
     },
 
     {
         "name": "Heavy equipment operators",
-        "focus": """
-        Create promotion content aimed at machinery operators looking for
-        work opportunities based on their skills.
-        """
+        "focus": (
+            "Promote work opportunities for skilled machinery and "
+            "heavy-equipment operators."
+        )
     }
 ]
 
 
-target_index = day_number % len(TARGETS)
+# ============================================================
+# HOURLY ROTATION
+# ============================================================
 
+# This changes category every hour.
+# Date + hour are used so the category changes continuously.
+
+rotation_number = NOW.timetuple().tm_yday * 24 + CURRENT_HOUR
+
+category_index = rotation_number % len(VEHICLE_CATEGORIES)
+target_index = rotation_number % len(TARGETS)
+
+selected_category = VEHICLE_CATEGORIES[category_index]
 selected_target = TARGETS[target_index]
+
+CATEGORY_NAME = selected_category["category"]
+VEHICLE_LIST = ", ".join(selected_category["vehicles"])
+TARGET_NAME = selected_target["name"]
+TARGET_FOCUS = selected_target["focus"]
 
 
 # ============================================================
@@ -468,277 +387,288 @@ selected_target = TARGETS[target_index]
 # ============================================================
 
 PROMPT = f"""
-You are the AI marketing manager for ChalakSetu.
+You are the official senior AI marketing manager for ChalakSetu.
 
 {WEBSITE_INFO}
 
-Today's promotion date: {TODAY}
+============================================================
+CURRENT PROMOTION INFORMATION
+============================================================
 
-Today's main vehicle or operator category:
-{category_name}
+Today's date:
 
-Relevant vehicles or machines:
-{vehicle_list}
+{TODAY}
 
-Today's target audience:
-{selected_target["name"]}
+Current hourly promotion:
+
+Hour number: {CURRENT_HOUR}
+
+Main category:
+
+{CATEGORY_NAME}
+
+Relevant vehicles or equipment:
+
+{VEHICLE_LIST}
+
+Target audience:
+
+{TARGET_NAME}
 
 Target focus:
-{selected_target["focus"]}
 
-Create a UNIQUE and HIGH-QUALITY Instagram/Reel promotion package.
+{TARGET_FOCUS}
 
-IMPORTANT RULES:
+============================================================
+YOUR TASK
+============================================================
 
-1. Focus strongly on today's vehicle category.
-2. Do not repeat old generic promotions.
-3. Make the promotion relevant to Indian drivers, vehicle owners,
-   employers, contractors and operators.
-4. Use realistic Indian environments.
-5. The promotion must clearly explain why ChalakSetu is useful.
-6. Do not claim that every user is government verified unless this is
-   actually true.
-7. Do not make false promises such as guaranteed jobs.
-8. Make the hook attention-grabbing.
-9. Keep Reel duration between 8 and 10 seconds.
-10. Include ChalakSetu and chalaksetu.in naturally.
-11. Hindi should be written in easy Hinglish using English letters.
-12. Odia should be written in proper Odia script.
-13. Make the Gemini video prompt detailed enough to directly use for
-    AI video generation.
-14. Mention natural Indian-looking people, realistic vehicles,
-    cinematic movement and background music in the video prompt.
-15. Make the Instagram caption attractive but not too long.
-16. Generate 5 to 10 relevant hashtags.
+Create ONE completely fresh and creative ChalakSetu promotion package.
+
+This package will be used for Instagram Reels, AI video generation,
+Instagram posters and social media posting.
+
+The promotion must feel different from generic advertisements.
+
+Use a realistic Indian environment.
+
+Create a strong story or situation around today's category.
+
+============================================================
+IMPORTANT VIDEO RULE
+============================================================
+
+The Gemini Video Prompt MUST VERY CLEARLY begin by saying:
+
+"Generate a VERTICAL 9:16 video for Instagram Reels."
+
+Also clearly state:
+
+- Aspect ratio: 9:16
+- Vertical portrait orientation
+- Duration: 8 to 10 seconds
+- High-definition quality
+- Realistic Indian people and environment
+- Natural movement
+- Camera movement
+- Scene progression
+- Background music or suitable sound design
+- End branding when appropriate
+
+Do NOT write a vague video prompt.
+
+The prompt must be ready to copy directly into Gemini.
+
+============================================================
+POSTER PROMPT RULE
+============================================================
+
+Create a separate POSTER PROMPT.
+
+This prompt will be copied directly into ChatGPT Image Generation.
+
+The poster prompt must clearly say:
+
+"Create a professional vertical 9:16 Instagram poster."
+
+Include:
+
+- Realistic Indian setting
+- Today's vehicle or equipment category
+- Professional advertising composition
+- ChalakSetu branding
+- chalaksetu.in
+- Clear readable headline
+- Space for readable text
+- No spelling mistakes in visible text
+- Modern and premium design
+- High quality
+
+The prompt must be directly usable without editing.
+
+============================================================
+FESTIVAL CHECK
+============================================================
+
+Check whether today's date, {TODAY}, has an important festival,
+national celebration, cultural celebration or significant observance
+relevant to India or any Indian state.
+
+Do not invent a festival.
+
+If there is a genuinely relevant celebration, provide:
+
+festival_name
+
+festival_region
+
+festival_poster_prompt
+
+The festival poster prompt must be directly ready to paste into
+ChatGPT Image Generation.
+
+It must combine:
+
+- The festival theme
+- Indian cultural elements appropriate to that festival
+- ChalakSetu branding
+- Drivers, vehicles or equipment where appropriate
+- chalaksetu.in
+- Professional vertical 9:16 poster composition
+
+If there is no relevant festival or celebration today, return null for:
+
+festival_name
+festival_region
+festival_poster_prompt
+
+============================================================
+LANGUAGE
+============================================================
+
+Hindi script:
+Natural Hindi/Hinglish suitable for Indian audiences.
+
+Odia script:
+Natural and readable Odia.
+
+============================================================
+HONESTY RULES
+============================================================
+
+Do not claim:
+
+- Guaranteed jobs
+- Guaranteed hiring
+- Government verification unless confirmed
+- Fake partnerships
+- Fake statistics
+
+Do not invent ChalakSetu features.
+
+============================================================
+RETURN FORMAT
+============================================================
 
 Return ONLY valid JSON.
 
-Use exactly this JSON format:
+Use exactly this structure:
 
 {{
-  "date": "{TODAY}",
-  "target": "",
-  "vehicle_category": "{category_name}",
-  "vehicles": "{vehicle_list}",
   "topic": "",
   "marketing_angle": "",
-
-  "reel": {{
-    "duration": "8-10 seconds",
-    "hook": "",
-    "scene_1": "",
-    "scene_2": "",
-    "scene_3": ""
-  }},
-
+  "hook": "",
   "hindi_script": "",
   "odia_script": "",
-
   "gemini_video_prompt": "",
-
-  "ai_image_prompt": "",
-
+  "chatgpt_poster_prompt": "",
   "instagram_caption": "",
-
-  "hashtags": ""
+  "hashtags": "",
+  "festival_name": null,
+  "festival_region": null,
+  "festival_poster_prompt": null
 }}
+
+Do not wrap JSON in markdown.
 """
-
-
-# ============================================================
-# CALL GEMINI
-# ============================================================
-
-print("Generating ChalakSetu promotion...")
-print("Category:", category_name)
-print("Vehicles:", vehicle_list)
-print("Target:", selected_target["name"])
-
-
-response = client.models.generate_content(
-    model="gemini-3.6-flash",
-    contents=PROMPT
-)
-
-
-raw_text = response.text.strip()
 
 
 # ============================================================
 # CLEAN JSON RESPONSE
 # ============================================================
 
-if raw_text.startswith("```json"):
-    raw_text = raw_text.replace("```json", "", 1)
+def clean_json_response(text):
 
-if raw_text.startswith("```"):
-    raw_text = raw_text.replace("```", "", 1)
+    text = text.strip()
 
-if raw_text.endswith("```"):
-    raw_text = raw_text[:-3]
+    if text.startswith("```"):
 
-raw_text = raw_text.strip()
+        text = re.sub(
+            r"^```(?:json)?",
+            "",
+            text,
+            flags=re.IGNORECASE
+        )
 
+        text = re.sub(
+            r"```$",
+            "",
+            text
+        )
 
-try:
-    promotion = json.loads(raw_text)
+        text = text.strip()
 
-except json.JSONDecodeError as error:
-    print("Gemini returned invalid JSON:")
-    print(raw_text)
-    raise error
+    return json.loads(text)
 
 
 # ============================================================
-# SAVE JSON FILE
+# GENERATE PROMOTION
 # ============================================================
 
-json_file = os.path.join(
-    OUTPUT_DIR,
-    f"{category_index + 1:02d}_{category_name.lower().replace(' ', '_')}.json"
+print("Generating ChalakSetu hourly promotion...")
+print(f"Date: {TODAY}")
+print(f"Hour: {CURRENT_HOUR}")
+print(f"Category: {CATEGORY_NAME}")
+print(f"Target: {TARGET_NAME}")
+
+response = client.models.generate_content(
+    model="gemini-2.5-flash",
+    contents=PROMPT
 )
 
-with open(json_file, "w", encoding="utf-8") as file:
-    json.dump(
-        promotion,
-        file,
-        ensure_ascii=False,
-        indent=2
-    )
+ai_text = response.text
+
+promotion = clean_json_response(ai_text)
 
 
 # ============================================================
-# CREATE MARKDOWN FILE
+# CREATE MARKDOWN PACKAGE
 # ============================================================
 
-safe_name = category_name.lower().replace(" ", "_")
+festival_section = ""
 
-markdown_file = os.path.join(
-    OUTPUT_DIR,
-    f"{category_index + 1:02d}_{safe_name}.md"
-)
+if promotion.get("festival_name"):
 
-
-markdown_content = f"""# ChalakSetu AI Promotion
-
-**Date:** {promotion.get("date", TODAY)}
-
-**Target:** {promotion.get("target", "")}
-
-**Vehicle Category:** {promotion.get("vehicle_category", category_name)}
-
-**Vehicles / Equipment:** {promotion.get("vehicles", vehicle_list)}
-
-**Topic:** {promotion.get("topic", "")}
-
-**Marketing Angle:** {promotion.get("marketing_angle", "")}
-
+    festival_section = f"""
 ---
 
-# Reel Details
+# FESTIVAL / SPECIAL DAY PROMOTION
 
-**Duration:** {promotion.get("reel", {}).get("duration", "8-10 seconds")}
+Festival: {promotion.get("festival_name")}
 
-**Hook:** {promotion.get("reel", {}).get("hook", "")}
+Region: {promotion.get("festival_region")}
 
-## Scene 1
+## ChatGPT Festival Poster Prompt
 
-{promotion.get("reel", {}).get("scene_1", "")}
+{promotion.get("festival_poster_prompt")}
+"""
 
-## Scene 2
+else:
 
-{promotion.get("reel", {}).get("scene_2", "")}
-
-## Scene 3
-
-{promotion.get("reel", {}).get("scene_3", "")}
-
+    festival_section = """
 ---
 
-# Hindi Script
+# FESTIVAL / SPECIAL DAY PROMOTION
 
-{promotion.get("hindi_script", "")}
-
----
-
-# Odia Script
-
-{promotion.get("odia_script", "")}
-
----
-
-# Gemini Video Prompt
-
-{promotion.get("gemini_video_prompt", "")}
-
----
-
-# AI Image Prompt
-
-{promotion.get("ai_image_prompt", "")}
-
----
-
-# Instagram Caption
-
-{promotion.get("instagram_caption", "")}
-
----
-
-# Hashtags
-
-{promotion.get("hashtags", "")}
+No relevant India or state festival promotion was identified for today.
 """
 
 
-with open(markdown_file, "w", encoding="utf-8") as file:
-    file.write(markdown_content)
+markdown_content = f"""# CHALAKSETU HOURLY PROMOTION
 
+Date: {TODAY}
 
-# ============================================================
-# UPDATE DAILY INDEX
-# ============================================================
+Run hour: {CURRENT_HOUR}:00 UTC
 
-index_file = os.path.join(OUTPUT_DIR, "promotions.json")
+Today's Vehicle Category: {CATEGORY_NAME}
 
-daily_index = {
-    "date": TODAY,
-    "promotion_category": category_name,
-    "vehicles": selected_category["vehicles"],
-    "target": selected_target["name"],
-    "markdown_file": markdown_file,
-    "json_file": json_file
-}
+Vehicles / Equipment:
 
-with open(index_file, "w", encoding="utf-8") as file:
-    json.dump(
-        daily_index,
-        file,
-        ensure_ascii=False,
-        indent=2
-    )
+{VEHICLE_LIST}
 
+Target Audience:
 
-# ============================================================
-# CREATE SUMMARY FILE
-# ============================================================
-
-summary_file = os.path.join(
-    OUTPUT_DIR,
-    "promotion.md"
-)
-
-summary_content = f"""# ChalakSetu AI Daily Promotion Package
-
-**Date:** {TODAY}
-
-**Today's Vehicle Category:** {category_name}
-
-**Vehicles / Equipment:**
-
-{vehicle_list}
-
-**Target Audience:** {selected_target["name"]}
+{TARGET_NAME}
 
 ---
 
@@ -752,7 +682,7 @@ summary_content = f"""# ChalakSetu AI Daily Promotion Package
 
 ## Hook
 
-{promotion.get("reel", {}).get("hook", "")}
+{promotion.get("hook", "")}
 
 ## Hindi Script
 
@@ -762,40 +692,68 @@ summary_content = f"""# ChalakSetu AI Daily Promotion Package
 
 {promotion.get("odia_script", "")}
 
-## Gemini Video Prompt
+---
+
+# GEMINI VIDEO PROMPT
 
 {promotion.get("gemini_video_prompt", "")}
 
-## Instagram Caption
+---
+
+# CHATGPT POSTER PROMPT
+
+{promotion.get("chatgpt_poster_prompt", "")}
+
+---
+
+# INSTAGRAM CAPTION
 
 {promotion.get("instagram_caption", "")}
 
 ## Hashtags
 
 {promotion.get("hashtags", "")}
+
+{festival_section}
 """
 
 
-with open(summary_file, "w", encoding="utf-8") as file:
-    file.write(summary_content)
-
-
 # ============================================================
-# DONE
+# SAVE FILES
 # ============================================================
 
-print("")
-print("==========================================")
-print("CHALAKSETU PROMOTION GENERATED SUCCESSFULLY")
-print("==========================================")
-print("")
-print("Date:", TODAY)
-print("Category:", category_name)
-print("Vehicles:", vehicle_list)
-print("Target:", selected_target["name"])
-print("")
-print("Files created:")
-print("-", markdown_file)
-print("-", json_file)
-print("-", index_file)
-print("-", summary_file)
+markdown_path = os.path.join(
+    OUTPUT_DIR,
+    "promotion.md"
+)
+
+json_path = os.path.join(
+    OUTPUT_DIR,
+    "promotion.json"
+)
+
+
+with open(markdown_path, "w", encoding="utf-8") as file:
+    file.write(markdown_content)
+
+
+with open(json_path, "w", encoding="utf-8") as file:
+    json.dump(
+        {
+            "date": TODAY,
+            "hour": CURRENT_HOUR,
+            "category": CATEGORY_NAME,
+            "vehicles": selected_category["vehicles"],
+            "target": TARGET_NAME,
+            "promotion": promotion
+        },
+        file,
+        ensure_ascii=False,
+        indent=2
+    )
+
+
+print()
+print("Promotion generated successfully!")
+print(f"Markdown file: {markdown_path}")
+print(f"JSON file: {json_path}")
