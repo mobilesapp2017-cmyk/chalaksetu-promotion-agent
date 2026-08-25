@@ -41,3 +41,22 @@ jobs:
           git add promotions/
           git diff --cached --quiet || git commit -m "Create AI daily promotion package"
           git push
+
+            - name: Send promotion to Telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          PROMOTION_FILE="promotions/$(date +'%Y-%m-%d')/promotion.md"
+
+          if [ -f "$PROMOTION_FILE" ]; then
+            MESSAGE=$(cat "$PROMOTION_FILE")
+
+            curl -s -X POST \
+              "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+              -d "chat_id=${TELEGRAM_CHAT_ID}" \
+              --data-urlencode "text=${MESSAGE}"
+          else
+            echo "Promotion file not found: $PROMOTION_FILE"
+            exit 1
+          fi
