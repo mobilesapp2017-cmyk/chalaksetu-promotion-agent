@@ -47,62 +47,37 @@ jobs:
             git commit -m "Create AI daily promotion package"
             git push
           fi
-      - name: Send complete promotion to Telegram
+            - name: Send complete promotion to Telegram
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
-          PROMOTION_FILE="promotions/$(date +'%Y-%m-%d')/promotion.md"
+          TODAY=$(date +'%Y-%m-%d')
+          export TODAY
 
-          if [ ! -f "$PROMOTION_FILE" ]; then
-            echo "Promotion file not found: $PROMOTION_FILE"
-            exit 1
-          fi
-
-          MESSAGE=$(python - <<'PY'
-          import re
-
-          file_path = "promotions/$(date +'%Y-%m-%d')/promotion.md"
-
-          with open(file_path, "r", encoding="utf-8") as f:
-              text = f.read()
-
-          text = re.sub(r'^# ', '🚛 ', text, flags=re.MULTILINE)
-          text = re.sub(r'^## ', '━━━━━━━━━━━━\n\n📌 ', text, flags=re.MULTILINE)
-          text = text.replace("**Date:**", "📅 Date:")
-          text = text.replace("**Today's Vehicle Category:**", "🚗 Vehicle Category:")
-          text = text.replace("**Vehicles / Equipment:**", "🚜 Vehicles / Equipment:")
-          text = text.replace("**Target Audience:**", "🎯 Target Audience:")
-
-          print(text)
-          PY
-          )
-
-          # Telegram has a 4096-character limit per message.
-          # Split the promotion into multiple messages if necessary.
           python - <<'PY'
           import os
           import requests
 
           token = os.environ["TELEGRAM_BOT_TOKEN"]
           chat_id = os.environ["TELEGRAM_CHAT_ID"]
+          today = os.environ["TODAY"]
 
-          file_path = "promotions/" + os.popen("date +%Y-%m-%d").read().strip() + "/promotion.md"
+          file_path = f"promotions/{today}/promotion.md"
+
+          print(f"Reading promotion file: {file_path}")
 
           with open(file_path, "r", encoding="utf-8") as f:
               text = f.read()
 
-          text = text.replace("# ChalakSetu AI Daily Promotion Package",
-                              "🚛 CHALAKSETU DAILY PROMOTION")
-          text = text.replace("## Topic", "🔥 TOPIC")
-          text = text.replace("## Marketing Angle", "💡 MARKETING ANGLE")
-          text = text.replace("## Hook", "🪝 HOOK")
-          text = text.replace("## Hindi Script", "🎬 HINDI SCRIPT")
-          text = text.replace("## Odia Script", "🎬 ODIA SCRIPT")
-          text = text.replace("## Gemini Video Prompt", "🎥 GEMINI VIDEO PROMPT")
-          text = text.replace("## Instagram Caption", "📱 INSTAGRAM CAPTION")
-          text = text.replace("## Hashtags", "🏷️ HASHTAGS")
+          # Make Telegram message more readable
+          text = text.replace(
+              "# ChalakSetu AI Daily Promotion Package",
+              "🚛 CHALAKSETU DAILY PROMOTION"
+          )
 
+          # Telegram maximum message size is 4096 characters.
+          # Split long promotions automatically.
           chunks = []
 
           while len(text) > 4000:
@@ -117,13 +92,15 @@ jobs:
           if text:
               chunks.append(text)
 
+          print(f"Sending {len(chunks)} Telegram message(s)")
+
           for i, chunk in enumerate(chunks, start=1):
               if len(chunks) > 1:
-                  chunk = f"📦 PART {i}/{len(chunks)}\n\n" + chunk
+                  chunk = f"🚛 CHALAKSETU PROMOTION\n📦 Part {i}/{len(chunks)}\n\n{chunk}"
 
               response = requests.post(
                   f"https://api.telegram.org/bot{token}/sendMessage",
-                  data={
+                  json={
                       "chat_id": chat_id,
                       "text": chunk
                   },
@@ -132,4 +109,6 @@ jobs:
 
               print(response.text)
               response.raise_for_status()
+
+          print("Promotion sent successfully to Telegram!")
           PY
