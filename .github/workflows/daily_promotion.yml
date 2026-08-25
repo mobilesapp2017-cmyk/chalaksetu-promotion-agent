@@ -1,6 +1,6 @@
-name: ChalakSetu Hourly Promotion Agent
+name: ChalakSetu Promotion Agent
 
-'on':
+on:
   schedule:
     # Run once every hour
     - cron: "*/5 * * * *"
