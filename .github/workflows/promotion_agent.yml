@@ -1,0 +1,160 @@
+name: ChalakSetu Promotion Agent
+
+'on':
+  schedule:
+    # Run every 5 minutes for testing
+    - cron: "*/5 * * * *"
+
+  # Allows manual testing from GitHub Actions
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  create-promotion:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # Step 1: Get repository files
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # Step 3: Install required packages
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install google-genai requests
+
+      # Step 4: Run the AI promotion agent
+      - name: Run ChalakSetu AI Promotion Agent
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python promotion_agent.py
+
+      # Step 5: Check what files were created
+      - name: Show generated promotion files
+        run: |
+          echo "Searching for promotion files..."
+          find promotions -type f 2>/dev/null || true
+
+      # Step 6: Commit generated promotion to GitHub
+      - name: Commit AI promotion package
+        run: |
+          git config --global user.name "ChalakSetu Promotion Agent"
+          git config --global user.email "actions@github.com"
+
+          git add promotions/
+
+          if git diff --cached --quiet; then
+            echo "No new promotion changes to commit"
+          else
+            git commit -m "Create AI promotion package"
+            git push origin main
+            echo "Promotion committed successfully"
+          fi
+
+      # Step 7: Find the newest promotion file
+      - name: Find latest promotion file
+        id: promotion
+        run: |
+          FILE=$(find promotions -type f -name "promotion.md" -printf "%T@ %p\n" 2>/dev/null | sort -nr | head -1 | cut -d' ' -f2-)
+
+          if [ -z "$FILE" ]; then
+            echo "ERROR: No promotion.md file found!"
+            exit 1
+          fi
+
+          echo "Latest promotion file: $FILE"
+
+          echo "file=$FILE" >> "$GITHUB_OUTPUT"
+
+      # Step 8: Send promotion to Telegram
+      - name: Send complete promotion to Telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          PROMOTION_FILE: ${{ steps.promotion.outputs.file }}
+        run: |
+          python - <<'PY'
+          import os
+          import requests
+
+          token = os.environ.get("TELEGRAM_BOT_TOKEN")
+          chat_id = os.environ.get("TELEGRAM_CHAT_ID")
+          file_path = os.environ.get("PROMOTION_FILE")
+
+          if not token:
+              raise RuntimeError("TELEGRAM_BOT_TOKEN secret is missing")
+
+          if not chat_id:
+              raise RuntimeError("TELEGRAM_CHAT_ID secret is missing")
+
+          if not file_path:
+              raise RuntimeError("PROMOTION_FILE was not found")
+
+          print(f"Reading promotion file: {file_path}")
+
+          with open(file_path, "r", encoding="utf-8") as f:
+              text = f.read().strip()
+
+          if not text:
+              raise RuntimeError("Promotion file is empty")
+
+          # Clean the main heading if present
+          text = text.replace(
+              "# CHALAKSETU HOURLY PROMOTION",
+              "CHALAKSETU PROMOTION"
+          )
+
+          # Telegram maximum message length is 4096 characters.
+          # Use a safer limit so headers can also fit.
+          max_length = 3500
+          chunks = []
+
+          while len(text) > max_length:
+              split_at = text.rfind("\n", 0, max_length)
+
+              if split_at < 1000:
+                  split_at = max_length
+
+              chunks.append(text[:split_at].strip())
+              text = text[split_at:].strip()
+
+          if text:
+              chunks.append(text)
+
+          print(f"Sending {len(chunks)} Telegram message(s)")
+
+          for i, chunk in enumerate(chunks, start=1):
+
+              header = (
+                  "🚛 CHALAKSETU PROMOTION\n"
+                  f"Part {i}/{len(chunks)}\n\n"
+              )
+
+              message = header + chunk
+
+              response = requests.post(
+                  f"https://api.telegram.org/bot{token}/sendMessage",
+                  json={
+                      "chat_id": chat_id,
+                      "text": message
+                  },
+                  timeout=30
+              )
+
+              print(response.text)
+
+              response.raise_for_status()
+
+          print("SUCCESS: Promotion sent to Telegram!")
+          PY
