@@ -1,0 +1,27 @@
+{
+  "date": "2026-08-25",
+  "hour": 11,
+  "category": "Electric Vehicle Drivers",
+  "vehicles": [
+    "Electric Car",
+    "Electric Taxi",
+    "Electric Bus",
+    "Electric Auto",
+    "Electric Truck"
+  ],
+  "target": "Heavy equipment operators",
+  "promotion": {
+    "topic": "Electric Commercial Vehicle & Heavy Machinery Operator Opportunities",
+    "marketing_angle": "Connecting skilled heavy-equipment operators and electric vehicle drivers directly with fleet owners and employers across India through chalaksetu.in.",
+    "hook": "इलेक्ट्रिक हैवी व्हीकल और मशीनरी ऑपरेटरों के लिए नए अवसर!",
+    "hindi_script": "भारत में इलेक्ट्रिक कमर्शियल वाहनों और आधुनिक हैवी मशीनों का दौर शुरू हो चुका है। अगर आप एक अनुभवी ऑपरेटर या ड्राइवर हैं और सही काम की तलाश में हैं, तो आज ही chalaksetu.in पर आएं। ChalakSetu एक ऐसा डिजिटल मंच है जो चालकों, हैवी मशीनरी ऑपरेटरों और वाहन मालिकों को एक साथ लाता है। अपनी सही श्रेणी चुनें और सीधे नियोक्ताओं से जुड़ें। विजिट करें: chalaksetu.in",
+    "odia_script": "ଭାରତରେ ଇଲେକ୍ଟ୍ରିକ ଭେହିକିଲ ଏବଂ ହେଭି ମେସିନାରୀର ଚାହିଦା ବଢ଼ିବାରେ ଲାଗିଛି। ଆପଣ ଯଦି ଜଣେ ଦକ୍ଷ ଡ୍ରାଇଭର କିମ୍ବା ହେଭି ମେସିନାରୀ ଅପରେଟର, ତେବେ chalaksetu.in ଆପଣଙ୍କ ପାଇଁ ଏକ ଉତ୍ତମ ମାଧ୍ୟମ। ChalakSetu ଆପଣଙ୍କୁ ଗାଡ଼ି ମାଲିକ ଏବଂ ନିଯୁକ୍ତିଦାତାଙ୍କ ସହ ସିଧାସଳଖ ଯୋଡ଼ିଥାଏ। ଆଜିହିଁ ଭିଜିଟ କରନ୍ତୁ chalaksetu.in ଏବଂ ନିଜର ପ୍ରୋଫାଇଲ ପ୍ରସ୍ତୁତ କରନ୍ତୁ।",
+    "gemini_video_prompt": "Generate a VERTICAL 9:16 video for Instagram Reels. Aspect ratio: 9:16, vertical portrait orientation. Duration: 8 to 10 seconds. High-definition quality featuring realistic Indian people and environment. The scene opens at an Indian green construction hub with a modern electric heavy truck and loader in the background. A confident Indian heavy equipment operator in a safety helmet and high-visibility vest inspects an electric vehicle screen before smiling warmly. Smooth camera pan and subtle push-in shot highlighting natural movements. Ambient sound of modern machinery and energetic corporate background music. Ends with clean ChalakSetu visual branding and website chalaksetu.in on screen.",
+    "chatgpt_poster_prompt": "Create a professional vertical 9:16 Instagram poster. Set in a realistic Indian industrial project site with modern electric heavy commercial trucks and electric machinery in the background. In the foreground, a professional Indian heavy equipment operator wearing modern safety equipment looks confident. Professional advertising composition with sleek modern typography, cyan electric energy accents, and warm daylight visual tone. Include prominent ChalakSetu branding and logo, bold readable headline 'EV & Heavy Equipment Operators Platform', and official website chalaksetu.in clearly visible at the bottom. Premium design, high quality, zero spelling mistakes.",
+    "instagram_caption": "इलेक्ट्रिक वाहनों और हैवी मशीनरी का भविष्य अब आपके सामने है! ⚡🚜\n\nअगर आप इलेक्ट्रिक कमर्शियल व्हीकल, इलेक्ट्रिक ट्रक या हैवी मशीनरी चलाने में कुशल हैं, तो ChalakSetu प्लेटफॉर्म से जुड़ें। \n\nChalakSetu (chalaksetu.in) चालकों, ऑपरेटरों और वाहन मालिकों को सीधे जोड़ने का माध्यम है।\n\nआज ही विजिट करें: www.chalaksetu.in\n\n#ChalakSetu #EVDrivers #HeavyEquipment #DriversIndia #ElectricTrucks #chalaksetu.in",
+    "hashtags": "#ChalakSetu #EVDrivers #HeavyEquipmentOperators #ElectricVehiclesIndia #MachineryOperators #DriverJobs #chalaksetu",
+    "festival_name": null,
+    "festival_region": null,
+    "festival_poster_prompt": null
+  }
+}
