@@ -16,6 +16,34 @@ if not GEMINI_API_KEY:
 # Create Gemini client
 client = genai.Client(api_key=GEMINI_API_KEY)
 
+# DEFINE THE PROMPT FIRST
+prompt = """
+Create one complete, original promotional content package for ChalakSetu.
+
+ChalakSetu is an Indian platform that helps:
+- Drivers find driving jobs
+- Vehicle owners and employers find drivers
+- Heavy equipment operators find work
+- Employers hire heavy equipment operators
+- Users check fuel prices
+- Users receive useful driver, transport and vehicle rule updates
+
+Website: https://chalaksetu.in
+
+Create attractive promotional content suitable for social media.
+
+Include:
+1. A powerful Hindi headline
+2. A short promotional caption in Hinglish
+3. ChalakSetu benefits
+4. Call to action to visit chalaksetu.in
+5. Relevant Instagram hashtags
+
+Do not invent features that ChalakSetu does not provide.
+Make every promotion fresh and different.
+Return clean, ready-to-use content.
+"""
+
 MAX_RETRIES = 6
 
 for attempt in range(MAX_RETRIES):
