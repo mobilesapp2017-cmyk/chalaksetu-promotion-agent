@@ -3,6 +3,16 @@ import random
 from google import genai
 from google.genai import types
 
+# Get Gemini API key from GitHub Actions environment
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+
+if not GEMINI_API_KEY:
+    raise RuntimeError(
+        "GEMINI_API_KEY is not available. "
+        "Add it in GitHub repository Settings > Secrets and variables > Actions."
+    )
+
+# Create Gemini client
 client = genai.Client(api_key=GEMINI_API_KEY)
 
 MAX_RETRIES = 6
@@ -31,7 +41,9 @@ for attempt in range(MAX_RETRIES):
         print(f"Generation attempt {attempt + 1} failed: {e}")
 
         if attempt == MAX_RETRIES - 1:
-            raise
+            raise RuntimeError(
+                f"Gemini failed after {MAX_RETRIES} attempts"
+            ) from e
 
         wait_time = min(60, (2 ** attempt) * 5) + random.randint(1, 5)
 
