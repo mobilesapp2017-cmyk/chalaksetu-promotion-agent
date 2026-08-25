@@ -1,36 +1,49 @@
-# ChalakSetu Daily Promotion Package
+# ChalakSetu AI Daily Promotion Package
 
 **Date:** 2026-08-25
 
-**Topic:** JCB operator opportunities
+**Topic:** Finding skilled heavy machinery operators easily
+
+**Marketing Angle:** Addressing the pain point of construction site owners and contractors who struggle to find verified, skilled JCB and crane operators quickly, preventing project delays.
+
+## Reel Details
+
+**Duration:** 8-10 seconds
+
+**Hook:** Project delayed because you can't find a skilled JCB operator?
+
+### Scene 1
+
+A frustrated site contractor looking at his watch on a dusty construction site with idle heavy machinery.
+
+### Scene 2
+
+Quick transition to a smartphone screen tapping on the ChalakSetu website to browse verified heavy equipment operators.
+
+### Scene 3
+
+A smiling contractor shaking hands with a professional operator in front of a working excavator, with the ChalakSetu logo and website URL on screen.
 
 ## Hindi Script
 
-JCB chalana aata hai lekin kaam nahi mil raha? ChalakSetu par apna profile banao, jobs aur opportunities dekho. Aaj hi visit karo chalaksetu.in!
+Construction rukne ka tension khatam! Ab JCB aur crane operators milenge bas ek click par. Aaj hi visit karein chalaksetu.in par.
 
 ## Odia Script
 
-ଆପଣ ଡ୍ରାଇଭର କିମ୍ବା ଅପରେଟର ହୋଇ କାମ ଖୋଜୁଛନ୍ତି କି? ChalakSetu ରେ ନିଜର ପ୍ରୋଫାଇଲ ତିଆରି କରନ୍ତୁ ଏବଂ ନୂଆ ସୁଯୋଗ ଖୋଜନ୍ତୁ। ଆଜି ହିଁ visit କରନ୍ତୁ chalaksetu.in!
+କାମ ଅଟକି ଯିବାର ଚିନ୍ତା ବନ୍ଦ! ବର୍ତ୍ତମାନ JCB ଏବଂ କ୍ରେନ୍ ଅପରେଟର୍ ମିଳିବେ କେବଳ ଗୋଟିଏ କ୍ଲିକ୍‌ରେ। ଆଜି જ visit କରନ୍ତୁ chalaksetu.in.
 
 ## Gemini Video Prompt
 
-Create a realistic, cinematic vertical 9:16 advertisement for ChalakSetu, focused on JCB operator opportunities. Start with: 'JCB chalana aata hai lekin kaam nahi mil raha?'. Show an Indian driver/operator in a realistic work environment, then show them discovering opportunities on their smartphone. End with a clean ChalakSetu promotion screen and the text: 'Find Jobs. Find Drivers. chalaksetu.in'. Natural Indian environment, professional advertising style, energetic background music.
+A vertical 9:16 high-definition promotional video. Scene 1 shows a stressed construction contractor standing near idle heavy machinery under the sun. Scene 2 zooms into a mobile screen displaying the ChalakSetu platform showing various verified heavy equipment operators like JCB and crane drivers. Scene 3 transitions to a happy handshake between the contractor and an operator. Modern upbeat background music, realistic lighting, professional color grading, cinematic quality, natural motion, ending with text overlay showing chalaksetu.in.
 
 ## AI Image Prompt
 
-Create a professional vertical Instagram promotional poster about JCB operator opportunities for the Indian platform ChalakSetu. Show a realistic Indian driver or heavy equipment operator with their vehicle or machine. Modern professional design, space for headline, ChalakSetu branding, and chalaksetu.in.
+A professional vertical Instagram image featuring a split view. On one side, a skilled JCB operator smiling inside his cabin; on the other side, a construction site contractor using his smartphone. Clean modern graphic overlay with the ChalakSetu logo, bold readable text saying 'Find Verified Heavy Equipment Operators Instantly', and website URL chalaksetu.in at the bottom. Bright daylight, high resolution, realistic commercial photography style.
 
 ## Instagram Caption
 
-🚀 JCB chalana aata hai lekin kaam nahi mil raha?
-
-ChalakSetu par profile banao aur driving/operator opportunities discover karo.
-
-Drivers aur Operators ke liye jobs.
-Vehicle Owners aur Employers ke liye drivers.
-
-🌐 chalaksetu.in
+Struggling to find reliable heavy equipment operators for your site? Don't let project delays cost you time and money. Connect with verified truck drivers, JCB operators, crane drivers, and more in just a few clicks. Simplify your hiring process today! Visit chalaksetu.in to get started.
 
 ## Hashtags
 
-#ChalakSetu #DriverJobs #DriverJob #JCBOperator #TractorDriver #TruckDriver #DrivingJobs #HeavyEquipmentOperator #JobSearchIndia
+#ChalakSetu #JCBOperator #HeavyEquipment #ConstructionJobs #DriverHiring

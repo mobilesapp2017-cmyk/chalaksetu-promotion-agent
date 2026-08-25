@@ -1,27 +1,21 @@
 {
-  "date": "2026-08-25",
-  "topic": "JCB operator opportunities",
-  "instagram_reel": {
-    "duration": "8-10 seconds",
-    "hook": "JCB chalana aata hai lekin kaam nahi mil raha?",
-    "scene_1": "Show the target worker facing the problem of finding suitable work.",
-    "scene_2": "Show the person using a smartphone to discover ChalakSetu.",
-    "scene_3": "Show ChalakSetu branding and the website chalaksetu.in."
-  },
-  "hindi_script": "JCB chalana aata hai lekin kaam nahi mil raha? ChalakSetu par apna profile banao, jobs aur opportunities dekho. Aaj hi visit karo chalaksetu.in!",
-  "odia_script": "ଆପଣ ଡ୍ରାଇଭର କିମ୍ବା ଅପରେଟର ହୋଇ କାମ ଖୋଜୁଛନ୍ତି କି? ChalakSetu ରେ ନିଜର ପ୍ରୋଫାଇଲ ତିଆରି କରନ୍ତୁ ଏବଂ ନୂଆ ସୁଯୋଗ ଖୋଜନ୍ତୁ। ଆଜି ହିଁ visit କରନ୍ତୁ chalaksetu.in!",
-  "gemini_video_prompt": "Create a realistic, cinematic vertical 9:16 advertisement for ChalakSetu, focused on JCB operator opportunities. Start with: 'JCB chalana aata hai lekin kaam nahi mil raha?'. Show an Indian driver/operator in a realistic work environment, then show them discovering opportunities on their smartphone. End with a clean ChalakSetu promotion screen and the text: 'Find Jobs. Find Drivers. chalaksetu.in'. Natural Indian environment, professional advertising style, energetic background music.",
-  "image_prompt": "Create a professional vertical Instagram promotional poster about JCB operator opportunities for the Indian platform ChalakSetu. Show a realistic Indian driver or heavy equipment operator with their vehicle or machine. Modern professional design, space for headline, ChalakSetu branding, and chalaksetu.in.",
-  "instagram_caption": "🚀 JCB chalana aata hai lekin kaam nahi mil raha?\n\nChalakSetu par profile banao aur driving/operator opportunities discover karo.\n\nDrivers aur Operators ke liye jobs.\nVehicle Owners aur Employers ke liye drivers.\n\n🌐 chalaksetu.in",
+  "topic": "Finding skilled heavy machinery operators easily",
+  "marketing_angle": "Addressing the pain point of construction site owners and contractors who struggle to find verified, skilled JCB and crane operators quickly, preventing project delays.",
+  "reel_duration": "8-10 seconds",
+  "reel_hook": "Project delayed because you can't find a skilled JCB operator?",
+  "scene_1": "A frustrated site contractor looking at his watch on a dusty construction site with idle heavy machinery.",
+  "scene_2": "Quick transition to a smartphone screen tapping on the ChalakSetu website to browse verified heavy equipment operators.",
+  "scene_3": "A smiling contractor shaking hands with a professional operator in front of a working excavator, with the ChalakSetu logo and website URL on screen.",
+  "hindi_script": "Construction rukne ka tension khatam! Ab JCB aur crane operators milenge bas ek click par. Aaj hi visit karein chalaksetu.in par.",
+  "odia_script": "କାମ ଅଟକି ଯିବାର ଚିନ୍ତା ବନ୍ଦ! ବର୍ତ୍ତମାନ JCB ଏବଂ କ୍ରେନ୍ ଅପରେଟର୍ ମିଳିବେ କେବଳ ଗୋଟିଏ କ୍ଲିକ୍‌ରେ। ଆଜି જ visit କରନ୍ତୁ chalaksetu.in.",
+  "gemini_video_prompt": "A vertical 9:16 high-definition promotional video. Scene 1 shows a stressed construction contractor standing near idle heavy machinery under the sun. Scene 2 zooms into a mobile screen displaying the ChalakSetu platform showing various verified heavy equipment operators like JCB and crane drivers. Scene 3 transitions to a happy handshake between the contractor and an operator. Modern upbeat background music, realistic lighting, professional color grading, cinematic quality, natural motion, ending with text overlay showing chalaksetu.in.",
+  "image_prompt": "A professional vertical Instagram image featuring a split view. On one side, a skilled JCB operator smiling inside his cabin; on the other side, a construction site contractor using his smartphone. Clean modern graphic overlay with the ChalakSetu logo, bold readable text saying 'Find Verified Heavy Equipment Operators Instantly', and website URL chalaksetu.in at the bottom. Bright daylight, high resolution, realistic commercial photography style.",
+  "instagram_caption": "Struggling to find reliable heavy equipment operators for your site? Don't let project delays cost you time and money. Connect with verified truck drivers, JCB operators, crane drivers, and more in just a few clicks. Simplify your hiring process today! Visit chalaksetu.in to get started.",
   "hashtags": [
     "#ChalakSetu",
-    "#DriverJobs",
-    "#DriverJob",
     "#JCBOperator",
-    "#TractorDriver",
-    "#TruckDriver",
-    "#DrivingJobs",
-    "#HeavyEquipmentOperator",
-    "#JobSearchIndia"
+    "#HeavyEquipment",
+    "#ConstructionJobs",
+    "#DriverHiring"
   ]
 }
