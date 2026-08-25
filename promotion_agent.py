@@ -51,7 +51,7 @@ for attempt in range(MAX_RETRIES):
         print(f"Generating promotion... Attempt {attempt + 1}/{MAX_RETRIES}")
 
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-3.6-flash",
             contents=prompt,
             config=types.GenerateContentConfig(
                 temperature=0.9
