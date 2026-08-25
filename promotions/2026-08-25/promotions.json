@@ -1,0 +1,68 @@
+{
+  "date": "2025-05-15",
+  "promotions": [
+    {
+      "id": 1,
+      "target": "Drivers looking for jobs",
+      "topic": "Driving job opportunities connection",
+      "marketing_angle": "Emotional and relatable",
+      "reel_duration": "8-10 seconds",
+      "reel_hook": "Driving is your skill, now find your next opportunity!",
+      "scene_1": "A tired car driver looking out the window of his vehicle parked on a busy Indian street.",
+      "scene_2": "The same driver smiling while creating his profile on his mobile phone.",
+      "scene_3": "A clean final screen showing ChalakSetu and chalaksetu.in.",
+      "hindi_script": "Driving aati hai? Toh der kis baat ki! Aaj hi ChalakSetu par apni profile banao aur driving job opportunities khojo. Visit karo chalaksetu.in!",
+      "odia_script": "ଡ୍ରାଇଭିଂ ଜାଣିଛନ୍ତି କି? ଆଜି ହିଁ ChalakSetu ରେ ଆପଣଙ୍କ ପ୍ରୋଫାଇଲ୍ ତିଆରି କରନ୍ତୁ ଏବଂ ଡ୍ରାଇଭିଂ ଚାକିରି ସୁଯୋଗ ଖୋଜନ୍ତୁ। ପରିଦର୍ଶନ କରନ୍ତୁ chalaksetu.in!",
+      "gemini_video_prompt": "Vertical 9:16 format, realistic Indian environment on a busy city street, a male car driver looking thoughtfully at his steering wheel, transition to him tapping his smartphone happily, warm natural lighting, soft background instrumental music, ending screen displaying ChalakSetu and chalaksetu.in.",
+      "image_prompt": "A professional Indian driver smiling while holding his smartphone to search for driving jobs, vertical 9:16, photorealistic, warm lighting, street background.",
+      "instagram_caption": "Looking for driving job opportunities? Connect with vehicle owners and employers easily. Create your profile today at chalaksetu.in!",
+      "hashtags": [
+        "#ChalakSetu",
+        "#DrivingJobs",
+        "#DriverLife"
+      ]
+    },
+    {
+      "id": 2,
+      "target": "Vehicle owners and employers",
+      "topic": "Finding drivers for your vehicles",
+      "marketing_angle": "Problem-solving and professional",
+      "reel_duration": "8-10 seconds",
+      "reel_hook": "Need a reliable driver for your vehicle? We make searching simple.",
+      "scene_1": "A frustrated vehicle owner standing next to his parked truck, looking around for a driver.",
+      "scene_2": "The owner browsing available driver profiles smoothly on his smartphone.",
+      "scene_3": "A clean final screen showing ChalakSetu and chalaksetu.in.",
+      "hindi_script": "Gaadi hai par driver nahi mil raha? Pareshani chodo! ChalakSetu par aao, car, bus, truck ya taxi drivers ke liye available profiles search karo. Visit chalaksetu.in!",
+      "odia_script": "ଗାଡ଼ି ଅଛି କିନ୍ତୁ ଡ୍ରାଇଭର ମିଳୁନାହାଁନ୍ତି କି? ChalakSetu କୁ ଆସନ୍ତୁ, କାର୍, ବସ୍, ଟ୍ରକ୍ ବା ଟାକ୍ସି ଡ୍ରାଇଭରଙ୍କ ପାଇଁ ଉପଲବ୍ଧ ପ୍ରୋଫାଇଲ୍ ଖୋଜନ୍ତୁ। ଦେଖନ୍ତୁ chalaksetu.in!",
+      "gemini_video_prompt": "Vertical 9:16 format, realistic Indian transport depot, a worried truck owner checking his vehicle, smooth camera pan to him scrolling through driver profiles on a mobile phone, bright daylight, professional business background music, ending screen displaying ChalakSetu and chalaksetu.in.",
+      "image_prompt": "An Indian vehicle owner using a mobile phone to search for drivers near a commercial truck, vertical 9:16, high quality, realistic lighting.",
+      "instagram_caption": "Searching for drivers for your car, taxi, bus, or truck? Explore available profiles and connect easily. Visit chalaksetu.in!",
+      "hashtags": [
+        "#ChalakSetu",
+        "#TruckDrivers",
+        "#FleetManagement"
+      ]
+    },
+    {
+      "id": 3,
+      "target": "Heavy-equipment operators and employers",
+      "topic": "Heavy machinery work opportunities",
+      "marketing_angle": "Motivational and direct",
+      "reel_duration": "8-10 seconds",
+      "reel_hook": "Operate heavy machinery? Discover your next work opportunity here.",
+      "scene_1": "An operator sitting inside the cabin of a large excavator at an active Indian construction site.",
+      "scene_2": "The operator checking work opportunities on his phone during a break.",
+      "scene_3": "A clean final screen showing ChalakSetu and chalaksetu.in.",
+      "hindi_script": "JCB, crane ya excavator chalana jaante ho? Apni skills ke hisaab se kaam ki talash karo. ChalakSetu par profile banao aur connect karo. Visit chalaksetu.in!",
+      "odia_script": "ଜେସିବି, କ୍ରେନ୍ ବା ଏକ୍ସକାଭେଟର ଚଳାଇ ଜାଣିଛନ୍ତି କି? ଆପଣଙ୍କ ଦକ୍ଷତା ଅନୁଯାୟୀ କାମର ସୁଯୋଗ ଖୋଜନ୍ତୁ। ChalakSetu ରେ ପ୍ରୋଫାଇଲ୍ ତିଆରି କରନ୍ତୁ। chalaksetu.in ଦେଖନ୍ତୁ!",
+      "gemini_video_prompt": "Vertical 9:16 format, realistic Indian construction site with dust and sunlight, an operator looking out from a JCB excavator, quick cut to him looking at work opportunities on a smartphone, upbeat energetic background music, ending screen displaying ChalakSetu and chalaksetu.in.",
+      "image_prompt": "Heavy equipment operator at a construction site checking a mobile phone for work opportunities, vertical 9:16, photorealistic, dusty sunlight background.",
+      "instagram_caption": "JCB, excavator, crane, or tractor operators and employers looking for operators, connect through ChalakSetu. Visit chalaksetu.in!",
+      "hashtags": [
+        "#ChalakSetu",
+        "#JCBOperator",
+        "#HeavyEquipment"
+      ]
+    }
+  ]
+}
