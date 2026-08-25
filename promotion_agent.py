@@ -1,678 +1,801 @@
 import os
 import json
-import re
-from datetime import datetime, timezone
-
+from datetime import datetime
 from google import genai
 
 
-# =========================================================
-# CHALAKSETU AI PROMOTION AGENT - VERSION 3
-# =========================================================
+# ============================================================
+# CONFIGURATION
+# ============================================================
 
-TODAY = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-PROMOTIONS_DIR = "promotions"
-RECENT_DAYS_TO_CHECK = 7
-
-API_KEY = os.getenv("GEMINI_API_KEY")
+API_KEY = os.environ.get("GEMINI_API_KEY")
 
 if not API_KEY:
-    raise RuntimeError(
+    raise ValueError(
         "GEMINI_API_KEY is missing. Add it in GitHub Secrets."
     )
 
 client = genai.Client(api_key=API_KEY)
 
+TODAY = datetime.now().strftime("%Y-%m-%d")
+OUTPUT_DIR = f"promotions/{TODAY}"
 
-# =========================================================
-# READ RECENT PROMOTIONS TO REDUCE REPETITION
-# =========================================================
-
-def get_recent_promotions():
-    recent_content = []
-
-    if not os.path.exists(PROMOTIONS_DIR):
-        return recent_content
-
-    folders = sorted(
-        [
-            name for name in os.listdir(PROMOTIONS_DIR)
-            if os.path.isdir(os.path.join(PROMOTIONS_DIR, name))
-        ],
-        reverse=True
-    )
-
-    for folder_name in folders[:RECENT_DAYS_TO_CHECK]:
-        folder_path = os.path.join(PROMOTIONS_DIR, folder_name)
-
-        for filename in os.listdir(folder_path):
-            if filename.endswith(".md") and filename.startswith(("01_", "02_", "03_")):
-
-                file_path = os.path.join(folder_path, filename)
-
-                try:
-                    with open(
-                        file_path,
-                        "r",
-                        encoding="utf-8"
-                    ) as file:
-                        content = file.read()
-
-                    # Keep recent content limited so the prompt
-                    # does not become unnecessarily large.
-                    recent_content.append(
-                        f"DATE: {folder_name}\n"
-                        f"FILE: {filename}\n"
-                        f"{content[:2500]}"
-                    )
-
-                except Exception as error:
-                    print(
-                        f"Could not read {file_path}: {error}"
-                    )
-
-    return recent_content
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 
-# =========================================================
-# CLEAN AI JSON RESPONSE
-# =========================================================
+# ============================================================
+# CHALAKSETU INFORMATION
+# ============================================================
 
-def clean_json_response(text):
-    text = text.strip()
+WEBSITE_INFO = """
+ChalakSetu is an Indian online platform connecting:
 
-    if text.startswith("```"):
-        text = re.sub(
-            r"^```(?:json)?",
-            "",
-            text,
-            flags=re.IGNORECASE
-        )
-        text = re.sub(r"```$", "", text)
-        text = text.strip()
-
-    return json.loads(text)
-
-
-# =========================================================
-# GENERATE THREE CREATIVE PROMOTIONS
-# =========================================================
-
-def generate_promotions():
-
-    recent_promotions = get_recent_promotions()
-
-    if recent_promotions:
-        recent_context = "\n\n---\n\n".join(recent_promotions)
-    else:
-        recent_context = "No previous promotions are available yet."
-
-    prompt = f"""
-You are the official senior AI marketing agent for ChalakSetu.
-
-TODAY'S DATE: {TODAY}
-
-=========================================================
-ABOUT CHALAKSETU
-=========================================================
-
-ChalakSetu is an Indian online platform that helps connect:
-
-1. Drivers looking for driving job opportunities.
-2. Heavy-equipment operators looking for work opportunities.
-3. Vehicle owners looking for drivers.
-4. Employers looking for drivers and equipment operators.
-
-Relevant categories include:
-
-- Car drivers
-- Taxi drivers
-- Truck drivers
-- Bus drivers
-- Tractor drivers
-- JCB operators
-- Excavator operators
-- Crane operators
-- Loader operators
-- Other heavy-equipment operators
+1. Drivers looking for jobs
+2. Vehicle owners looking for drivers
+3. Employers looking for drivers
+4. Heavy equipment operators looking for work
+5. Contractors looking for equipment operators
 
 Website: chalaksetu.in
 
-=========================================================
-YOUR TASK
-=========================================================
+Users can create profiles, search opportunities, find drivers,
+find operators, and connect with relevant people.
 
-Create THREE completely different, creative, fresh
-Instagram/Reels promotional packages.
+The platform is focused on India.
+"""
 
-PROMOTION 1:
-Target drivers looking for jobs.
 
-PROMOTION 2:
-Target vehicle owners and employers looking for drivers.
+# ============================================================
+# ALL MAJOR INDIAN VEHICLE & EQUIPMENT CATEGORIES
+# ============================================================
 
-PROMOTION 3:
-Target heavy-equipment operators looking for work.
+VEHICLE_CATEGORIES = [
 
-IMPORTANT:
-The three promotions must NOT use the same story pattern.
+    # --------------------------------------------------------
+    # PERSONAL / PASSENGER VEHICLES
+    # --------------------------------------------------------
 
-For example, do NOT make all promotions:
+    {
+        "category": "Car Drivers",
+        "vehicles": [
+            "Hatchback",
+            "Sedan",
+            "SUV",
+            "MUV",
+            "Luxury Car",
+            "Private Car"
+        ]
+    },
 
-person has problem
-→ person opens phone
-→ ChalakSetu logo
+    {
+        "category": "Taxi and Cab Drivers",
+        "vehicles": [
+            "Taxi",
+            "Cab",
+            "App Taxi",
+            "Airport Taxi",
+            "Tourist Taxi",
+            "Intercity Cab"
+        ]
+    },
 
-Instead, make each promotion feel like a different advertisement.
+    {
+        "category": "Auto Rickshaw Drivers",
+        "vehicles": [
+            "Auto Rickshaw",
+            "Electric Auto",
+            "CNG Auto",
+            "Passenger Auto"
+        ]
+    },
 
-Possible creative styles include:
+    {
+        "category": "E-Rickshaw Drivers",
+        "vehicles": [
+            "E-Rickshaw",
+            "Electric Rickshaw",
+            "Battery Rickshaw"
+        ]
+    },
 
-- Emotional
-- Funny and relatable
-- Motivational
-- Problem and solution
-- Mini story
-- Question hook
-- Before and after
-- Dramatic
-- Direct advertisement
-- Daily-life situation
-- Professional
-- Aspirational
+    {
+        "category": "Bus Drivers",
+        "vehicles": [
+            "School Bus",
+            "College Bus",
+            "Private Bus",
+            "Tourist Bus",
+            "Staff Bus",
+            "City Bus",
+            "Government Bus",
+            "Luxury Bus",
+            "Sleeper Bus",
+            "Mini Bus"
+        ]
+    },
 
-Choose DIFFERENT styles for all three promotions.
 
-=========================================================
-REEL STRUCTURE
-=========================================================
+    # --------------------------------------------------------
+    # GOODS / COMMERCIAL VEHICLES
+    # --------------------------------------------------------
 
-Each Reel should be approximately 8-10 seconds.
+    {
+        "category": "Truck Drivers",
+        "vehicles": [
+            "Light Truck",
+            "Medium Truck",
+            "Heavy Truck",
+            "Container Truck",
+            "Trailer Truck",
+            "Tanker Truck",
+            "Tipper Truck",
+            "Dumper Truck"
+        ]
+    },
 
-Follow this approximate timing:
+    {
+        "category": "Mini Truck Drivers",
+        "vehicles": [
+            "Tata Ace",
+            "Bolero Pickup",
+            "Ashok Leyland Dost",
+            "Mahindra Jeeto",
+            "Mini Truck",
+            "Pickup Vehicle"
+        ]
+    },
 
-0-2 seconds:
-A powerful visual or spoken hook.
+    {
+        "category": "Goods Carrier Drivers",
+        "vehicles": [
+            "Goods Carrier",
+            "Delivery Vehicle",
+            "Cargo Van",
+            "Parcel Vehicle",
+            "Commercial Pickup"
+        ]
+    },
 
-2-5 seconds:
-A relatable problem, situation, story, or emotion.
+    {
+        "category": "Tempo Drivers",
+        "vehicles": [
+            "Tempo",
+            "Cargo Tempo",
+            "Passenger Tempo",
+            "Delivery Tempo"
+        ]
+    },
 
-5-8 seconds:
-Show how ChalakSetu can be used to search, discover,
-create a profile, or connect.
+    {
+        "category": "Container Drivers",
+        "vehicles": [
+            "Shipping Container Truck",
+            "Container Trailer",
+            "Cargo Container Vehicle"
+        ]
+    },
 
-8-10 seconds:
-Strong natural call to action and ChalakSetu branding.
+    {
+        "category": "Tanker Drivers",
+        "vehicles": [
+            "Water Tanker",
+            "Milk Tanker",
+            "Fuel Tanker",
+            "Oil Tanker",
+            "Chemical Tanker"
+        ]
+    },
 
-IMPORTANT:
-Do not force every Scene 3 to be only a logo screen.
-Whenever possible, show a meaningful final action first,
-then end naturally with ChalakSetu branding.
 
-=========================================================
-HOOK QUALITY
-=========================================================
+    # --------------------------------------------------------
+    # AGRICULTURE VEHICLES
+    # --------------------------------------------------------
 
-Hooks must sound natural and catchy for Indian audiences.
+    {
+        "category": "Tractor Drivers",
+        "vehicles": [
+            "Farm Tractor",
+            "Agricultural Tractor",
+            "Tractor Trolley"
+        ]
+    },
 
-Prefer conversational hooks such as:
+    {
+        "category": "Agricultural Machine Operators",
+        "vehicles": [
+            "Combine Harvester",
+            "Paddy Harvester",
+            "Thresher",
+            "Rotavator",
+            "Power Tiller"
+        ]
+    },
 
-- "Gaadi chalana aata hai... par kaam kahan milega?"
-- "Gaadi khadi hai... driver kahan hai?"
-- "JCB chalana aata hai? Phir apni skill ko mauka do!"
-- "Roz kaam dhoondhna mushkil lagta hai?"
-- "Driver chahiye, par sahi profile kaise dhoondhen?"
 
-Do NOT copy these examples exactly unless necessary.
-Create fresh hooks.
+    # --------------------------------------------------------
+    # CONSTRUCTION / HEAVY EQUIPMENT
+    # --------------------------------------------------------
 
-Avoid generic AI phrases such as:
+    {
+        "category": "JCB Operators",
+        "vehicles": [
+            "JCB Backhoe Loader",
+            "Backhoe Loader"
+        ]
+    },
 
-- "Discover your next opportunity"
-- "We make searching simple"
-- "Unlock new possibilities"
-- "Your journey starts here"
+    {
+        "category": "Excavator Operators",
+        "vehicles": [
+            "Excavator",
+            "Crawler Excavator",
+            "Mini Excavator"
+        ]
+    },
 
-=========================================================
-TRUTH AND SAFETY RULES
-=========================================================
+    {
+        "category": "Crane Operators",
+        "vehicles": [
+            "Mobile Crane",
+            "Hydraulic Crane",
+            "Tower Crane",
+            "Crawler Crane"
+        ]
+    },
 
-Never claim or imply that ChalakSetu:
+    {
+        "category": "Loader Operators",
+        "vehicles": [
+            "Wheel Loader",
+            "Front Loader",
+            "Skid Steer Loader"
+        ]
+    },
 
-- verifies drivers or operators
-- guarantees jobs
-- guarantees hiring
-- provides instant jobs
-- provides instant drivers
-- guarantees a match
-- has a specific number of jobs or users
-- works with a specific company unless provided
-- provides a feature not explicitly described above
+    {
+        "category": "Bulldozer Operators",
+        "vehicles": [
+            "Bulldozer",
+            "Crawler Dozer"
+        ]
+    },
 
-Do not invent:
+    {
+        "category": "Road Construction Machine Operators",
+        "vehicles": [
+            "Road Roller",
+            "Motor Grader",
+            "Paver Machine",
+            "Asphalt Paver"
+        ]
+    },
 
-- salaries
-- job counts
-- company names
-- testimonials
-- statistics
-- government partnerships
-- verification systems
+    {
+        "category": "Concrete Machine Operators",
+        "vehicles": [
+            "Transit Mixer",
+            "Concrete Mixer",
+            "Concrete Pump",
+            "Boom Pump"
+        ]
+    },
 
-Do not say:
+    {
+        "category": "Mining Equipment Operators",
+        "vehicles": [
+            "Mining Excavator",
+            "Dumper",
+            "Mining Truck",
+            "Rock Breaker"
+        ]
+    },
 
-- "Verified drivers instantly"
-- "Guaranteed job"
-- "Job guaranteed"
-- "Driver in one click"
-- "Instantly hire anyone"
+    {
+        "category": "Forklift Operators",
+        "vehicles": [
+            "Forklift",
+            "Warehouse Forklift",
+            "Reach Truck"
+        ]
+    },
 
-Use truthful wording such as:
+    {
+        "category": "Telehandler Operators",
+        "vehicles": [
+            "Telehandler",
+            "Material Handler"
+        ]
+    },
 
-- Search job opportunities
-- Create your profile
-- Search available profiles
-- Explore opportunities
-- Connect with drivers and employers
-- Discover profiles
-- Search according to your requirements
 
-=========================================================
-LANGUAGE RULES
-=========================================================
+    # --------------------------------------------------------
+    # DELIVERY / TWO WHEELER
+    # --------------------------------------------------------
 
-Hindi script:
-Use natural spoken Hindi/Hinglish in Roman English letters.
-Make it sound like a real Instagram voiceover.
+    {
+        "category": "Delivery Riders",
+        "vehicles": [
+            "Motorcycle",
+            "Scooter",
+            "Electric Scooter",
+            "Delivery Bike"
+        ]
+    },
 
-Odia script:
-Use ONLY proper Odia Unicode characters.
-Do NOT use Gujarati, Bengali, Devanagari, Telugu,
-Tamil, or any other Indian script.
+    {
+        "category": "Courier Drivers",
+        "vehicles": [
+            "Courier Van",
+            "Delivery Van",
+            "Parcel Vehicle"
+        ]
+    },
 
-English brand words such as ChalakSetu and chalaksetu.in
-are allowed inside the Odia script.
 
-Keep both scripts short enough for approximately
-8-10 seconds.
+    # --------------------------------------------------------
+    # SPECIAL PURPOSE VEHICLES
+    # --------------------------------------------------------
 
-=========================================================
-VIDEO PROMPT RULES
-=========================================================
+    {
+        "category": "Ambulance Drivers",
+        "vehicles": [
+            "Ambulance",
+            "Patient Transport Vehicle"
+        ]
+    },
 
-The Gemini video prompt must be detailed and production-ready.
+    {
+        "category": "School Vehicle Drivers",
+        "vehicles": [
+            "School Bus",
+            "School Van"
+        ]
+    },
 
-Include:
+    {
+        "category": "Garbage Vehicle Drivers",
+        "vehicles": [
+            "Garbage Truck",
+            "Waste Collection Vehicle",
+            "Municipal Vehicle"
+        ]
+    },
 
-- Vertical 9:16 format
-- 8-10 second duration
-- Realistic Indian location/environment
-- Exact visual action for each time segment
-- Character appearance where useful
-- Relevant vehicles or machines
-- Natural human movement
-- Camera movement
-- Realistic lighting
-- Background music style
-- Exact voiceover/dialogue
-- Natural ending with ChalakSetu and chalaksetu.in
+    {
+        "category": "Fire Service Vehicle Drivers",
+        "vehicles": [
+            "Fire Truck",
+            "Fire Tender"
+        ]
+    },
 
-The prompt should be good enough to directly paste into
-an AI video generator.
+    {
+        "category": "Water Vehicle Drivers",
+        "vehicles": [
+            "Water Tanker",
+            "Water Supply Vehicle"
+        ]
+    },
 
-=========================================================
-IMAGE PROMPT RULES
-=========================================================
+    {
+        "category": "Tow Vehicle Drivers",
+        "vehicles": [
+            "Tow Truck",
+            "Recovery Vehicle"
+        ]
+    },
 
-Create a strong, detailed promotional poster prompt.
 
-Include:
+    # --------------------------------------------------------
+    # EMERGING / ELECTRIC VEHICLES
+    # --------------------------------------------------------
 
-- Vertical 9:16 format
-- Indian setting
-- Main person and action
-- Relevant vehicle or machinery
-- Professional advertising composition
-- Clear space for headline text
-- ChalakSetu branding area
-- chalaksetu.in
-- Photorealistic commercial quality
+    {
+        "category": "Electric Vehicle Drivers",
+        "vehicles": [
+            "Electric Car",
+            "Electric Taxi",
+            "Electric Bus",
+            "Electric Auto",
+            "Electric Truck"
+        ]
+    }
+]
 
-Do NOT force the AI image generator to write long,
-complex text inside the image.
 
-=========================================================
-INSTAGRAM RULES
-=========================================================
+# ============================================================
+# SELECT TODAY'S CATEGORY
+# ============================================================
 
-Create:
+day_number = datetime.now().timetuple().tm_yday
 
-- A natural caption
-- Clear call to action
-- 8 to 12 relevant hashtags
+category_index = day_number % len(VEHICLE_CATEGORIES)
 
-Hashtags must be relevant.
-Do not use random trending hashtags.
+selected_category = VEHICLE_CATEGORIES[category_index]
 
-=========================================================
-RECENT PROMOTIONS TO AVOID REPEATING
-=========================================================
+category_name = selected_category["category"]
 
-Below are promotions generated recently.
+vehicle_list = ", ".join(selected_category["vehicles"])
 
-Do NOT repeat the same:
 
-- topic
-- hook
-- story
-- scene sequence
-- marketing angle
-- wording
+# ============================================================
+# PROMOTION TARGETS
+# ============================================================
 
-Instead, create something noticeably fresh.
+TARGETS = [
 
-{recent_context}
+    {
+        "name": "Drivers looking for jobs",
+        "focus": """
+        Create promotion content aimed at drivers and operators who are
+        looking for jobs and work opportunities.
+        """
+    },
 
-=========================================================
-OUTPUT FORMAT
-=========================================================
+    {
+        "name": "Vehicle owners looking for drivers",
+        "focus": """
+        Create promotion content aimed at vehicle owners who need to find
+        reliable and suitable drivers for their vehicles.
+        """
+    },
+
+    {
+        "name": "Employers and contractors",
+        "focus": """
+        Create promotion content aimed at employers, companies and contractors
+        looking to hire drivers or skilled equipment operators.
+        """
+    },
+
+    {
+        "name": "Heavy equipment operators",
+        "focus": """
+        Create promotion content aimed at machinery operators looking for
+        work opportunities based on their skills.
+        """
+    }
+]
+
+
+target_index = day_number % len(TARGETS)
+
+selected_target = TARGETS[target_index]
+
+
+# ============================================================
+# AI PROMPT
+# ============================================================
+
+PROMPT = f"""
+You are the AI marketing manager for ChalakSetu.
+
+{WEBSITE_INFO}
+
+Today's promotion date: {TODAY}
+
+Today's main vehicle or operator category:
+{category_name}
+
+Relevant vehicles or machines:
+{vehicle_list}
+
+Today's target audience:
+{selected_target["name"]}
+
+Target focus:
+{selected_target["focus"]}
+
+Create a UNIQUE and HIGH-QUALITY Instagram/Reel promotion package.
+
+IMPORTANT RULES:
+
+1. Focus strongly on today's vehicle category.
+2. Do not repeat old generic promotions.
+3. Make the promotion relevant to Indian drivers, vehicle owners,
+   employers, contractors and operators.
+4. Use realistic Indian environments.
+5. The promotion must clearly explain why ChalakSetu is useful.
+6. Do not claim that every user is government verified unless this is
+   actually true.
+7. Do not make false promises such as guaranteed jobs.
+8. Make the hook attention-grabbing.
+9. Keep Reel duration between 8 and 10 seconds.
+10. Include ChalakSetu and chalaksetu.in naturally.
+11. Hindi should be written in easy Hinglish using English letters.
+12. Odia should be written in proper Odia script.
+13. Make the Gemini video prompt detailed enough to directly use for
+    AI video generation.
+14. Mention natural Indian-looking people, realistic vehicles,
+    cinematic movement and background music in the video prompt.
+15. Make the Instagram caption attractive but not too long.
+16. Generate 5 to 10 relevant hashtags.
 
 Return ONLY valid JSON.
 
-No Markdown.
-No explanation.
-No text before or after the JSON.
-
-Use exactly this structure:
+Use exactly this JSON format:
 
 {{
   "date": "{TODAY}",
-  "promotions": [
-    {{
-      "id": 1,
-      "target": "Drivers looking for jobs",
-      "creative_style": "style name",
-      "topic": "short unique topic",
-      "marketing_angle": "short explanation",
-      "reel_duration": "8-10 seconds",
-      "reel_hook": "strong natural hook",
+  "target": "",
+  "vehicle_category": "{category_name}",
+  "vehicles": "{vehicle_list}",
+  "topic": "",
+  "marketing_angle": "",
 
-      "scene_1": {{
-        "time": "0-2 seconds",
-        "visual": "detailed visual action",
-        "voiceover": "exact short voiceover"
-      }},
+  "reel": {{
+    "duration": "8-10 seconds",
+    "hook": "",
+    "scene_1": "",
+    "scene_2": "",
+    "scene_3": ""
+  }},
 
-      "scene_2": {{
-        "time": "2-5 seconds",
-        "visual": "detailed visual action",
-        "voiceover": "exact short voiceover"
-      }},
+  "hindi_script": "",
+  "odia_script": "",
 
-      "scene_3": {{
-        "time": "5-8 seconds",
-        "visual": "detailed visual action",
-        "voiceover": "exact short voiceover"
-      }},
+  "gemini_video_prompt": "",
 
-      "scene_4": {{
-        "time": "8-10 seconds",
-        "visual": "meaningful ending plus branding",
-        "voiceover": "strong short CTA"
-      }},
+  "ai_image_prompt": "",
 
-      "hindi_script": "complete short Hindi/Hinglish voiceover",
-      "odia_script": "complete short Odia voiceover",
+  "instagram_caption": "",
 
-      "gemini_video_prompt": "complete detailed production-ready prompt",
-
-      "image_prompt": "complete detailed promotional poster prompt",
-
-      "instagram_caption": "natural attractive caption with CTA",
-
-      "hashtags": [
-        "#ChalakSetu"
-      ]
-    }},
-
-    {{
-      "id": 2,
-      "target": "Vehicle owners and employers looking for drivers",
-      "creative_style": "different style",
-      "topic": "different topic",
-      "marketing_angle": "different angle",
-      "reel_duration": "8-10 seconds",
-      "reel_hook": "different hook",
-
-      "scene_1": {{
-        "time": "0-2 seconds",
-        "visual": "description",
-        "voiceover": "description"
-      }},
-
-      "scene_2": {{
-        "time": "2-5 seconds",
-        "visual": "description",
-        "voiceover": "description"
-      }},
-
-      "scene_3": {{
-        "time": "5-8 seconds",
-        "visual": "description",
-        "voiceover": "description"
-      }},
-
-      "scene_4": {{
-        "time": "8-10 seconds",
-        "visual": "description",
-        "voiceover": "description"
-      }},
-
-      "hindi_script": "script",
-      "odia_script": "script",
-      "gemini_video_prompt": "prompt",
-      "image_prompt": "prompt",
-      "instagram_caption": "caption",
-      "hashtags": [
-        "#ChalakSetu"
-      ]
-    }},
-
-    {{
-      "id": 3,
-      "target": "Heavy-equipment operators looking for work",
-      "creative_style": "different style",
-      "topic": "different topic",
-      "marketing_angle": "different angle",
-      "reel_duration": "8-10 seconds",
-      "reel_hook": "different hook",
-
-      "scene_1": {{
-        "time": "0-2 seconds",
-        "visual": "description",
-        "voiceover": "description"
-      }},
-
-      "scene_2": {{
-        "time": "2-5 seconds",
-        "visual": "description",
-        "voiceover": "description"
-      }},
-
-      "scene_3": {{
-        "time": "5-8 seconds",
-        "visual": "description",
-        "voiceover": "description"
-      }},
-
-      "scene_4": {{
-        "time": "8-10 seconds",
-        "visual": "description",
-        "voiceover": "description"
-      }},
-
-      "hindi_script": "script",
-      "odia_script": "script",
-      "gemini_video_prompt": "prompt",
-      "image_prompt": "prompt",
-      "instagram_caption": "caption",
-      "hashtags": [
-        "#ChalakSetu"
-      ]
-    }}
-  ]
+  "hashtags": ""
 }}
 """
 
-    response = client.models.generate_content(
-        model="gemini-3.5-flash-lite",
-        contents=prompt,
+
+# ============================================================
+# CALL GEMINI
+# ============================================================
+
+print("Generating ChalakSetu promotion...")
+print("Category:", category_name)
+print("Vehicles:", vehicle_list)
+print("Target:", selected_target["name"])
+
+
+response = client.models.generate_content(
+    model="gemini-2.5-flash",
+    contents=PROMPT
+)
+
+
+raw_text = response.text.strip()
+
+
+# ============================================================
+# CLEAN JSON RESPONSE
+# ============================================================
+
+if raw_text.startswith("```json"):
+    raw_text = raw_text.replace("```json", "", 1)
+
+if raw_text.startswith("```"):
+    raw_text = raw_text.replace("```", "", 1)
+
+if raw_text.endswith("```"):
+    raw_text = raw_text[:-3]
+
+raw_text = raw_text.strip()
+
+
+try:
+    promotion = json.loads(raw_text)
+
+except json.JSONDecodeError as error:
+    print("Gemini returned invalid JSON:")
+    print(raw_text)
+    raise error
+
+
+# ============================================================
+# SAVE JSON FILE
+# ============================================================
+
+json_file = os.path.join(
+    OUTPUT_DIR,
+    f"{category_index + 1:02d}_{category_name.lower().replace(' ', '_')}.json"
+)
+
+with open(json_file, "w", encoding="utf-8") as file:
+    json.dump(
+        promotion,
+        file,
+        ensure_ascii=False,
+        indent=2
     )
 
-    return clean_json_response(response.text)
+
+# ============================================================
+# CREATE MARKDOWN FILE
+# ============================================================
+
+safe_name = category_name.lower().replace(" ", "_")
+
+markdown_file = os.path.join(
+    OUTPUT_DIR,
+    f"{category_index + 1:02d}_{safe_name}.md"
+)
 
 
-# =========================================================
-# SAVE PROMOTIONS
-# =========================================================
+markdown_content = f"""# ChalakSetu AI Promotion
 
-def safe_filename(text):
-    text = text.lower()
-    text = re.sub(r"[^a-z0-9]+", "_", text)
-    return text.strip("_")
+**Date:** {promotion.get("date", TODAY)}
 
+**Target:** {promotion.get("target", "")}
 
-def save_package(data):
+**Vehicle Category:** {promotion.get("vehicle_category", category_name)}
 
-    folder = os.path.join(PROMOTIONS_DIR, TODAY)
-    os.makedirs(folder, exist_ok=True)
+**Vehicles / Equipment:** {promotion.get("vehicles", vehicle_list)}
 
-    json_path = os.path.join(folder, "promotions.json")
+**Topic:** {promotion.get("topic", "")}
 
-    with open(json_path, "w", encoding="utf-8") as file:
-        json.dump(
-            data,
-            file,
-            ensure_ascii=False,
-            indent=2
-        )
+**Marketing Angle:** {promotion.get("marketing_angle", "")}
 
-    for promotion in data["promotions"]:
+---
 
-        promotion_id = promotion["id"]
-        target_name = safe_filename(promotion["target"])
+# Reel Details
 
-        filename = f"{promotion_id:02d}_{target_name}.md"
+**Duration:** {promotion.get("reel", {}).get("duration", "8-10 seconds")}
 
-        markdown_path = os.path.join(folder, filename)
+**Hook:** {promotion.get("reel", {}).get("hook", "")}
 
-        with open(
-            markdown_path,
-            "w",
-            encoding="utf-8"
-        ) as file:
+## Scene 1
 
-            file.write("# ChalakSetu AI Promotion\n\n")
+{promotion.get("reel", {}).get("scene_1", "")}
 
-            file.write(f"**Date:** {TODAY}\n\n")
-            file.write(
-                f"**Target:** {promotion['target']}\n\n"
-            )
-            file.write(
-                f"**Creative Style:** "
-                f"{promotion['creative_style']}\n\n"
-            )
-            file.write(
-                f"**Topic:** {promotion['topic']}\n\n"
-            )
-            file.write(
-                f"**Marketing Angle:** "
-                f"{promotion['marketing_angle']}\n\n"
-            )
+## Scene 2
 
-            file.write("## Reel Details\n\n")
-            file.write(
-                f"**Duration:** "
-                f"{promotion['reel_duration']}\n\n"
-            )
-            file.write(
-                f"**Hook:** "
-                f"{promotion['reel_hook']}\n\n"
-            )
+{promotion.get("reel", {}).get("scene_2", "")}
 
-            for scene_number in range(1, 5):
+## Scene 3
 
-                scene = promotion[
-                    f"scene_{scene_number}"
-                ]
+{promotion.get("reel", {}).get("scene_3", "")}
 
-                file.write(
-                    f"### Scene {scene_number} "
-                    f"({scene['time']})\n\n"
-                )
+---
 
-                file.write(
-                    f"**Visual:** {scene['visual']}\n\n"
-                )
+# Hindi Script
 
-                file.write(
-                    f"**Voiceover:** "
-                    f"{scene['voiceover']}\n\n"
-                )
+{promotion.get("hindi_script", "")}
 
-            file.write("## Hindi Script\n\n")
-            file.write(
-                promotion["hindi_script"] + "\n\n"
-            )
+---
 
-            file.write("## Odia Script\n\n")
-            file.write(
-                promotion["odia_script"] + "\n\n"
-            )
+# Odia Script
 
-            file.write("## Gemini Video Prompt\n\n")
-            file.write(
-                promotion["gemini_video_prompt"] + "\n\n"
-            )
+{promotion.get("odia_script", "")}
 
-            file.write("## AI Image Prompt\n\n")
-            file.write(
-                promotion["image_prompt"] + "\n\n"
-            )
+---
 
-            file.write("## Instagram Caption\n\n")
-            file.write(
-                promotion["instagram_caption"] + "\n\n"
-            )
+# Gemini Video Prompt
 
-            file.write("## Hashtags\n\n")
-            file.write(
-                " ".join(promotion["hashtags"]) + "\n"
-            )
+{promotion.get("gemini_video_prompt", "")}
 
-        print(f"Created: {markdown_path}")
+---
+
+# AI Image Prompt
+
+{promotion.get("ai_image_prompt", "")}
+
+---
+
+# Instagram Caption
+
+{promotion.get("instagram_caption", "")}
+
+---
+
+# Hashtags
+
+{promotion.get("hashtags", "")}
+"""
 
 
-# =========================================================
-# MAIN
-# =========================================================
+with open(markdown_file, "w", encoding="utf-8") as file:
+    file.write(markdown_content)
 
-if __name__ == "__main__":
 
-    print(
-        "Starting ChalakSetu AI Promotion Agent Version 3..."
+# ============================================================
+# UPDATE DAILY INDEX
+# ============================================================
+
+index_file = os.path.join(OUTPUT_DIR, "promotions.json")
+
+daily_index = {
+    "date": TODAY,
+    "promotion_category": category_name,
+    "vehicles": selected_category["vehicles"],
+    "target": selected_target["name"],
+    "markdown_file": markdown_file,
+    "json_file": json_file
+}
+
+with open(index_file, "w", encoding="utf-8") as file:
+    json.dump(
+        daily_index,
+        file,
+        ensure_ascii=False,
+        indent=2
     )
 
-    recent = get_recent_promotions()
 
-    print(
-        f"Found {len(recent)} recent promotions "
-        f"to use for repetition avoidance."
-    )
+# ============================================================
+# CREATE SUMMARY FILE
+# ============================================================
 
-    promotion_data = generate_promotions()
+summary_file = os.path.join(
+    OUTPUT_DIR,
+    "promotion.md"
+)
 
-    save_package(promotion_data)
+summary_content = f"""# ChalakSetu AI Daily Promotion Package
 
-    print(
-        "Successfully created 3 creative AI promotions."
-    )
+**Date:** {TODAY}
+
+**Today's Vehicle Category:** {category_name}
+
+**Vehicles / Equipment:**
+
+{vehicle_list}
+
+**Target Audience:** {selected_target["name"]}
+
+---
+
+## Topic
+
+{promotion.get("topic", "")}
+
+## Marketing Angle
+
+{promotion.get("marketing_angle", "")}
+
+## Hook
+
+{promotion.get("reel", {}).get("hook", "")}
+
+## Hindi Script
+
+{promotion.get("hindi_script", "")}
+
+## Odia Script
+
+{promotion.get("odia_script", "")}
+
+## Gemini Video Prompt
+
+{promotion.get("gemini_video_prompt", "")}
+
+## Instagram Caption
+
+{promotion.get("instagram_caption", "")}
+
+## Hashtags
+
+{promotion.get("hashtags", "")}
+"""
+
+
+with open(summary_file, "w", encoding="utf-8") as file:
+    file.write(summary_content)
+
+
+# ============================================================
+# DONE
+# ============================================================
+
+print("")
+print("==========================================")
+print("CHALAKSETU PROMOTION GENERATED SUCCESSFULLY")
+print("==========================================")
+print("")
+print("Date:", TODAY)
+print("Category:", category_name)
+print("Vehicles:", vehicle_list)
+print("Target:", selected_target["name"])
+print("")
+print("Files created:")
+print("-", markdown_file)
+print("-", json_file)
+print("-", index_file)
+print("-", summary_file)
