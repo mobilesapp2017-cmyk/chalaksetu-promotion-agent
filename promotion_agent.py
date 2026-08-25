@@ -2,110 +2,150 @@ import os
 import json
 from datetime import datetime, timezone
 
-# ChalakSetu AI Promotion Agent
-# Phase 1: Creates a daily promotional content package for free.
+from google import genai
+
+
+# =========================================================
+# ChalakSetu Real AI Promotion Agent
+# =========================================================
 
 TODAY = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
-PROMOTION_TOPICS = [
-    {
-        "topic": "Driver jobs and opportunities",
-        "audience": "Drivers looking for work",
-        "hook": "Driver ho aur job dhundh rahe ho?",
-    },
-    {
-        "topic": "JCB operator opportunities",
-        "audience": "JCB and heavy equipment operators",
-        "hook": "JCB chalana aata hai lekin kaam nahi mil raha?",
-    },
-    {
-        "topic": "Tractor driver opportunities",
-        "audience": "Tractor drivers",
-        "hook": "Tractor chalane ka experience hai aur kaam ki talash mein ho?",
-    },
-    {
-        "topic": "Employers looking for drivers",
-        "audience": "Vehicle owners and employers",
-        "hook": "Aapko apni gaadi ke liye driver chahiye?",
-    },
-]
+API_KEY = os.getenv("GEMINI_API_KEY")
 
-def choose_topic():
-    day_number = datetime.now(timezone.utc).timetuple().tm_yday
-    return PROMOTION_TOPICS[day_number % len(PROMOTION_TOPICS)]
+if not API_KEY:
+    raise RuntimeError(
+        "GEMINI_API_KEY is missing. Add it in GitHub Secrets."
+    )
 
-def create_package():
-    item = choose_topic()
+client = genai.Client(api_key=API_KEY)
 
-    package = {
-        "date": TODAY,
-        "topic": item["topic"],
-        "instagram_reel": {
-            "duration": "8-10 seconds",
-            "hook": item["hook"],
-            "scene_1": "Show the target worker facing the problem of finding suitable work.",
-            "scene_2": "Show the person using a smartphone to discover ChalakSetu.",
-            "scene_3": "Show ChalakSetu branding and the website chalaksetu.in.",
-        },
-        "hindi_script": (
-            f"{item['hook']} ChalakSetu par apna profile banao, "
-            "jobs aur opportunities dekho. Aaj hi visit karo chalaksetu.in!"
-        ),
-        "odia_script": (
-            "ଆପଣ ଡ୍ରାଇଭର କିମ୍ବା ଅପରେଟର ହୋଇ କାମ ଖୋଜୁଛନ୍ତି କି? "
-            "ChalakSetu ରେ ନିଜର ପ୍ରୋଫାଇଲ ତିଆରି କରନ୍ତୁ ଏବଂ ନୂଆ ସୁଯୋଗ ଖୋଜନ୍ତୁ। "
-            "ଆଜି ହିଁ visit କରନ୍ତୁ chalaksetu.in!"
-        ),
-        "gemini_video_prompt": (
-            "Create a realistic, cinematic vertical 9:16 advertisement for ChalakSetu, "
-            f"focused on {item['topic']}. Start with: '{item['hook']}'. "
-            "Show an Indian driver/operator in a realistic work environment, then show them "
-            "discovering opportunities on their smartphone. End with a clean ChalakSetu "
-            "promotion screen and the text: 'Find Jobs. Find Drivers. chalaksetu.in'. "
-            "Natural Indian environment, professional advertising style, energetic background music."
-        ),
-        "image_prompt": (
-            f"Create a professional vertical Instagram promotional poster about {item['topic']} "
-            "for the Indian platform ChalakSetu. Show a realistic Indian driver or heavy equipment "
-            "operator with their vehicle or machine. Modern professional design, space for headline, "
-            "ChalakSetu branding, and chalaksetu.in."
-        ),
-        "instagram_caption": (
-            f"🚀 {item['hook']}\n\n"
-            "ChalakSetu par profile banao aur driving/operator opportunities discover karo.\n\n"
-            "Drivers aur Operators ke liye jobs.\n"
-            "Vehicle Owners aur Employers ke liye drivers.\n\n"
-            "🌐 chalaksetu.in"
-        ),
-        "hashtags": [
-            "#ChalakSetu",
-            "#DriverJobs",
-            "#DriverJob",
-            "#JCBOperator",
-            "#TractorDriver",
-            "#TruckDriver",
-            "#DrivingJobs",
-            "#HeavyEquipmentOperator",
-            "#JobSearchIndia",
-        ],
-    }
 
-    return package
+def generate_promotion():
+    prompt = """
+You are the official AI marketing and promotion agent for ChalakSetu.
+
+ABOUT CHALAKSETU:
+ChalakSetu is an Indian online platform that connects:
+- Drivers looking for jobs
+- Heavy equipment operators looking for work
+- Vehicle owners looking for drivers
+- Employers looking for drivers and operators
+
+The platform covers categories such as:
+Truck drivers, car drivers, bus drivers, tractor drivers,
+JCB operators, excavator operators, crane operators,
+loaders, and other heavy-equipment operators.
+
+Website: https://chalaksetu.in
+
+YOUR JOB:
+Create ONE completely fresh, attractive, non-repetitive daily
+promotion package for ChalakSetu.
+
+The promotion should feel natural and useful, NOT like spam.
+
+Choose an interesting angle yourself. For example:
+- a driver's struggle to find work
+- an employer struggling to find a suitable driver
+- JCB/operator opportunities
+- seasonal work opportunities
+- why creating a professional profile helps
+- finding drivers in one place
+- a short emotional story
+- a funny relatable situation
+- a powerful motivational hook
+
+IMPORTANT:
+Do not invent real job numbers, company names, salaries, or
+claims that are not provided.
+
+Return ONLY valid JSON.
+Do not use markdown.
+Do not write anything before or after the JSON.
+
+Use exactly this structure:
+
+{
+  "topic": "short topic",
+  "marketing_angle": "why this promotion idea is interesting",
+  "reel_duration": "8-10 seconds",
+  "reel_hook": "very strong opening hook",
+  "scene_1": "visual description for first scene",
+  "scene_2": "visual description for second scene",
+  "scene_3": "visual description for final scene",
+  "hindi_script": "natural Hindi/Hinglish voiceover",
+  "odia_script": "natural Odia voiceover in Odia script",
+  "gemini_video_prompt": "detailed prompt for generating a realistic vertical 9:16 promotional video, including visuals, camera movement, voiceover, dialogue if needed, and background music",
+  "image_prompt": "detailed prompt for an attractive professional Instagram promotional image",
+  "instagram_caption": "attractive Instagram caption with call to action",
+  "hashtags": [
+    "#ChalakSetu",
+    "#example",
+    "#example"
+  ]
+}
+
+RULES:
+- Make the hook short and powerful.
+- Make the Hindi script natural for Indian drivers.
+- Make the Odia script natural for Odisha audiences.
+- Keep the video suitable for Instagram Reels.
+- Include ChalakSetu naturally.
+- Include chalaksetu.in in the final promotion.
+- Use only relevant hashtags, not too many.
+- Make today's content feel different from generic advertisements.
+"""
+
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt,
+    )
+
+    text = response.text.strip()
+
+    # Remove accidental Markdown code fences if returned
+    if text.startswith("```"):
+        text = text.replace("```json", "", 1)
+        text = text.replace("```", "", 1)
+        text = text.strip()
+
+    return json.loads(text)
+
 
 def save_package(package):
     folder = os.path.join("promotions", TODAY)
     os.makedirs(folder, exist_ok=True)
 
     json_path = os.path.join(folder, "promotion.json")
+
     with open(json_path, "w", encoding="utf-8") as file:
         json.dump(package, file, ensure_ascii=False, indent=2)
 
     markdown_path = os.path.join(folder, "promotion.md")
 
     with open(markdown_path, "w", encoding="utf-8") as file:
-        file.write("# ChalakSetu Daily Promotion Package\n\n")
-        file.write(f"**Date:** {package['date']}\n\n")
+
+        file.write("# ChalakSetu AI Daily Promotion Package\n\n")
+
+        file.write(f"**Date:** {TODAY}\n\n")
         file.write(f"**Topic:** {package['topic']}\n\n")
+        file.write(
+            f"**Marketing Angle:** {package['marketing_angle']}\n\n"
+        )
+
+        file.write("## Reel Details\n\n")
+        file.write(f"**Duration:** {package['reel_duration']}\n\n")
+        file.write(f"**Hook:** {package['reel_hook']}\n\n")
+
+        file.write("### Scene 1\n\n")
+        file.write(package["scene_1"] + "\n\n")
+
+        file.write("### Scene 2\n\n")
+        file.write(package["scene_2"] + "\n\n")
+
+        file.write("### Scene 3\n\n")
+        file.write(package["scene_3"] + "\n\n")
 
         file.write("## Hindi Script\n\n")
         file.write(package["hindi_script"] + "\n\n")
@@ -125,9 +165,14 @@ def save_package(package):
         file.write("## Hashtags\n\n")
         file.write(" ".join(package["hashtags"]) + "\n")
 
-    print(f"Promotion package created: {folder}")
-    print(f"Topic: {package['topic']}")
+    print(f"AI promotion package created successfully: {folder}")
+
 
 if __name__ == "__main__":
-    promotion_package = create_package()
+    print("Starting ChalakSetu AI Promotion Agent...")
+
+    promotion_package = generate_promotion()
+
     save_package(promotion_package)
+
+    print("ChalakSetu AI Promotion Agent finished successfully.")
