@@ -4,48 +4,62 @@
 
 **Target:** Drivers looking for jobs
 
-**Topic:** Driving job opportunities connection
+**Creative Style:** Daily-life situation
 
-**Marketing Angle:** Emotional and relatable
+**Topic:** Connecting everyday drivers to open opportunities
+
+**Marketing Angle:** Conversational and empowering
 
 ## Reel Details
 
 **Duration:** 8-10 seconds
 
-**Hook:** Driving is your skill, now find your next opportunity!
+**Hook:** Gaadi chalana aata hai... par agla kaam kahan milega?
 
-### Scene 1
+### Scene 1 (0-2 seconds)
 
-A tired car driver looking out the window of his vehicle parked on a busy Indian street.
+**Visual:** A friendly car driver sitting inside his sedan on a sunny street, looking thoughtfully ahead.
 
-### Scene 2
+**Voiceover:** Gaadi chalana aata hai...
 
-The same driver smiling while creating his profile on his mobile phone.
+### Scene 2 (2-5 seconds)
 
-### Scene 3
+**Visual:** The driver pulls out his smartphone and opens the ChalakSetu mobile website with a tap.
 
-A clean final screen showing ChalakSetu and chalaksetu.in.
+**Voiceover:** ...par sahi kaam ki talash ab hui aasan.
+
+### Scene 3 (5-8 seconds)
+
+**Visual:** He smiles as he browses available driving job listings on the screen.
+
+**Voiceover:** Apni profile banao aur opportunities explore karo.
+
+### Scene 4 (8-10 seconds)
+
+**Visual:** He nods confidently, putting his phone away, ending with ChalakSetu and chalaksetu.in on screen.
+
+**Voiceover:** Aaj hi visit karo chalaksetu.in!
 
 ## Hindi Script
 
-Driving aati hai? Toh der kis baat ki! Aaj hi ChalakSetu par apni profile banao aur driving job opportunities khojo. Visit karo chalaksetu.in!
+Gaadi chalana aata hai? Apni profile banao, driving job opportunities khojo aur connect karo. Visit karo chalaksetu.in!
 
 ## Odia Script
 
-ଡ୍ରାଇଭିଂ ଜାଣିଛନ୍ତି କି? ଆଜି ହିଁ ChalakSetu ରେ ଆପଣଙ୍କ ପ୍ରୋଫାଇଲ୍ ତିଆରି କରନ୍ତୁ ଏବଂ ଡ୍ରାଇଭିଂ ଚାକିରି ସୁଯୋଗ ଖୋଜନ୍ତୁ। ପରିଦର୍ଶନ କରନ୍ତୁ chalaksetu.in!
+ଡ୍ରାଇଭିଂ ଜାଣିଛନ୍ତି କି? ChalakSetu ରେ ଆପଣଙ୍କ ପ୍ରୋଫାଇଲ୍ ତିଆରି କରନ୍ତୁ ଏବଂ ସୁଯୋଗ ଖୋଜନ୍ତୁ। ପରିଦର୍ଶନ କରନ୍ତୁ chalaksetu.in!
 
 ## Gemini Video Prompt
 
-Vertical 9:16 format, realistic Indian environment on a busy city street, a male car driver looking thoughtfully at his steering wheel, transition to him tapping his smartphone happily, warm natural lighting, soft background instrumental music, ending screen displaying ChalakSetu and chalaksetu.in.
+Vertical 9:16 format, 8-10 second video, realistic Indian urban street setting, a friendly car driver inside a vehicle looking at his phone screen, warm natural lighting, upbeat acoustic background music, smooth cuts, concluding with ChalakSetu logo and chalaksetu.in.
 
 ## AI Image Prompt
 
-A professional Indian driver smiling while holding his smartphone to search for driving jobs, vertical 9:16, photorealistic, warm lighting, street background.
+A friendly Indian car driver smiling while holding his smartphone to search for job opportunities, vertical 9:16, photorealistic commercial advertising style, warm daylight, clean background.
 
 ## Instagram Caption
 
-Looking for driving job opportunities? Connect with vehicle owners and employers easily. Create your profile today at chalaksetu.in!
+Ready to drive your career forward? Create your driver profile and explore open opportunities today. Visit chalaksetu.in to get started!
 
 ## Hashtags
 
-#ChalakSetu #DrivingJobs #DriverLife
+#ChalakSetu #DriverJobs #CarDriver #TaxiDriver #DriverLife #JobSearch #IndiaDrivers #WorkOpportunity
